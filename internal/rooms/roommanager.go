@@ -696,10 +696,10 @@ func CreateZone(zoneName string) (roomId int, err error) {
 		return 0, err
 	}
 
+	addRoomToMemory(newRoom)
+
 	// save to the flat file
 	SaveRoomTemplate(*newRoom)
-
-	addRoomToMemory(newRoom)
 
 	// write room to the folder under the new ID
 	return newRoom.RoomId, nil
