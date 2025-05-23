@@ -410,6 +410,7 @@ func Room(rest string, user *users.UserRecord, liveRoom *rooms.Room, flags event
 			return false, fmt.Errorf("room %d not found", roomId)
 		}
 
+		user.SendText(fmt.Sprintf("Room %s set to %s.", propertyName, propertyValue))
 	} else {
 		user.SendText(fmt.Sprintf(`Invalid room command: <ansi fg="command">%s</ansi>`, roomCmd))
 	}
