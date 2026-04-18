@@ -8,7 +8,7 @@
 
 It includes a fully playable default world, and provides built-in tools to customize or create your own.
 
-Playable online demo: **https://www.gomud.net**
+Playable online demo: **http://www.gomud.net**
 
 ---
 
