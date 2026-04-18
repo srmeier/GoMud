@@ -402,7 +402,7 @@
         var sz   = Math.max(7, Math.round(CONNECTION_WIDTH * zoomScale * 2.5));
         var half = sz / 2;
 
-        console.log('[map] drawing ' + type + ' badge at (' + Math.round(mx) + ', ' + Math.round(my) + ') size=' + sz);
+
 
         ctx.save();
 

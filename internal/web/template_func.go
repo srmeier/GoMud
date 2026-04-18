@@ -5,6 +5,7 @@ import (
 	"html"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/GoMudEngine/GoMud/internal/configs"
 )
@@ -99,6 +100,7 @@ var (
 		"lowercase": func(str string) string {
 			return strings.ToLower(str)
 		},
+		"now": func() int64 { return time.Now().UnixMilli() },
 		"getconfig": func() configs.Config {
 			return configs.GetConfig()
 		},

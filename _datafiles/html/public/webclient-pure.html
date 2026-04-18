@@ -567,6 +567,213 @@
             margin-top: 2px;
         }
 
+        /* FX picker */
+        .trigger-fx-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .trigger-fx-group-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 6px;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 3px;
+        }
+
+        .trigger-fx-group-header:hover {
+            background: #0d2e28;
+        }
+
+        .trigger-fx-group-arrow {
+            font-size: 8px;
+            color: #3ad4b8;
+            width: 10px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .trigger-fx-group-name {
+            font-size: 10px;
+            font-family: Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #7ab8a0;
+            flex: 1;
+        }
+
+        .trigger-fx-group-count {
+            font-size: 10px;
+            font-family: Arial, sans-serif;
+            color: #3ad4b8;
+        }
+
+        .trigger-fx-group-items {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding-left: 10px;
+            margin-bottom: 4px;
+        }
+
+        .trigger-fx-group-items.collapsed {
+            display: none;
+        }
+
+        .trigger-fx-item {
+            background: #0a1e1a;
+            border: 1px solid #0f3333;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: border-color 0.15s;
+        }
+
+        .trigger-fx-item.active {
+            border-color: #1c6b60;
+        }
+
+        .trigger-fx-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 8px;
+            cursor: default;
+        }
+
+        .trigger-fx-preview-btn {
+            background: none;
+            border: 1px solid #1c6b60;
+            border-radius: 3px;
+            color: #7ab8a0;
+            font-size: 10px;
+            font-family: Arial, sans-serif;
+            padding: 1px 7px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            flex-shrink: 0;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .trigger-fx-preview-btn:hover {
+            background: #1c6b60;
+            color: #dffbd1;
+        }
+
+        .trigger-fx-name {
+            flex: 1;
+            font-family: monospace;
+            font-size: 12px;
+            color: #7ab8a0;
+            transition: color 0.15s;
+        }
+
+        .trigger-fx-item.active .trigger-fx-name {
+            color: #dffbd1;
+        }
+
+        .trigger-fx-params {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 6px 8px 8px 40px;
+            border-top: 1px solid #0f3333;
+        }
+
+        .trigger-fx-item.active .trigger-fx-params {
+            display: flex;
+        }
+
+        .fx-param-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 90px;
+        }
+
+        .fx-param-group label {
+            color: #7ab8a0;
+            font-size: 10px;
+            font-family: Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .fx-param-input {
+            padding: 4px 6px;
+            background: #111;
+            border: 1px solid #1c6b60;
+            border-radius: 3px;
+            color: #dffbd1;
+            font-family: monospace;
+            font-size: 12px;
+            outline: none;
+            width: 100%;
+        }
+
+        .fx-param-input[type="color"] {
+            padding: 2px 4px;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        .fx-param-input:focus {
+            border-color: #3ad4b8;
+        }
+
+        /* Trigger IO section */
+        .trigger-io-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 2px;
+        }
+
+        .trigger-io-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        #trigger-io-area {
+            width: 100%;
+            min-height: 80px;
+            padding: 6px 7px;
+            background: #111;
+            border: 1px solid #1c6b60;
+            border-radius: 3px;
+            color: #dffbd1;
+            font-family: monospace;
+            font-size: 11px;
+            resize: vertical;
+            outline: none;
+            line-height: 1.4;
+            display: none;
+        }
+
+        #trigger-io-area.visible {
+            display: block;
+        }
+
+        #trigger-io-area:focus {
+            border-color: #3ad4b8;
+        }
+
+        #trigger-io-error {
+            color: #e06060;
+            font-size: 11px;
+            font-family: monospace;
+            margin-top: 4px;
+            display: none;
+        }
+
+        #trigger-io-error.visible {
+            display: block;
+        }
+
         /* Stats tab */
         .stats-uptime {
             font-size: 11px;
@@ -578,24 +785,46 @@
         }
 
         .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 7em 7em;
+            display: flex;
             align-items: baseline;
+            justify-content: space-between;
             padding: 3px 0;
             font-size: 11px;
-            font-family: monospace;
             border-bottom: 1px solid #0a1a16;
         }
         .stats-row:last-child { border-bottom: none; }
-        .stats-row-label  { color: #7ab8a0; font-family: Arial, sans-serif; }
-        .stats-row-values { display: contents; }
-        .stats-row-value  { color: #dffbd1; font-variant-numeric: tabular-nums; text-align: right; padding-right: 8px; }
-        .stats-row-rate   { color: #7ab8a0; font-variant-numeric: tabular-nums; text-align: right; }
+
+        .stats-row-label {
+            color: #7ab8a0;
+            font-family: Arial, sans-serif;
+            flex: 1;
+        }
+
+        .stats-row-right {
+            display: flex;
+            gap: 16px;
+        }
+
+        .stats-row-value {
+            color: #dffbd1;
+            font-family: monospace;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+            min-width: 7em;
+        }
+
+        .stats-row-rate {
+            color: #7ab8a0;
+            font-family: monospace;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+            min-width: 7em;
+        }
 
         .stats-gmcp-header {
-            display: grid;
-            grid-template-columns: 1fr 7em 7em;
+            display: flex;
             align-items: baseline;
+            justify-content: space-between;
             padding: 4px 0 3px;
             font-size: 11px;
             font-family: Arial, sans-serif;
@@ -605,8 +834,20 @@
             border-bottom: 1px solid #0f3333;
         }
         .stats-gmcp-header:hover { color: #dffbd1; }
-        .stats-gmcp-toggle { font-size: 9px; color: #3ad4b8; margin-right: 4px; }
-        .stats-gmcp-total  { color: #dffbd1; font-variant-numeric: tabular-nums; font-family: monospace; text-align: right; padding-right: 8px; }
+
+        .stats-gmcp-toggle {
+            font-size: 9px;
+            color: #3ad4b8;
+            margin-right: 4px;
+        }
+
+        .stats-gmcp-total {
+            color: #dffbd1;
+            font-family: monospace;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+            min-width: 7em;
+        }
 
         .stats-gmcp-rows {
             display: none;
@@ -614,6 +855,41 @@
             padding-left: 10px;
         }
         .stats-gmcp-rows.open { display: flex; }
+
+        .stats-ns-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 11px;
+            border-bottom: 1px solid #0a1a16;
+            cursor: pointer;
+            user-select: none;
+        }
+        .stats-ns-row:last-of-type { border-bottom: none; }
+        .stats-ns-row:hover .stats-row-label { color: #dffbd1; }
+
+        .stats-ns-count {
+            color: #7ab8a0;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            margin-left: 3px;
+        }
+
+        .stats-ns-payload {
+            display: none;
+            margin: 2px 0 4px 14px;
+            padding: 6px 8px;
+            background: #0a1a16;
+            border-left: 2px solid #1c6b60;
+            font-family: monospace;
+            font-size: 11px;
+            color: #dffbd1;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .stats-ns-payload.open { display: block; }
     </style>
 
     <link rel="stylesheet" href="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/css/xterm.css" />
@@ -622,7 +898,7 @@
     <script src="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/js/xterm.4.19.0.js"></script>
     <script src="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/js/xterm-addon-fit.js"></script>
     <script src="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/js/mp3.js"></script>
-    <script src="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/js/fx.js"></script>
+    <script src="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/js/fx.js?v=2"></script>
     <script src="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/js/winbox.bundle.min.js"></script>
     <script src="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/js/webclient-core.js"></script>
     <script src="{{ .CONFIG.FilePaths.WebCDNLocation }}/static/js/triggers.js"></script>
@@ -695,13 +971,28 @@
                             <input type="text" id="trigger-pattern-input" placeholder="e.g. You receive {number} gold." spellcheck="false">
                             <label for="trigger-body-input">Function body <span style="color:#555;text-transform:none;letter-spacing:0">(receives: matches)</span></label>
                             <textarea id="trigger-body-input" spellcheck="false"></textarea>
+                            <label>Visual Effects</label>
+                            <div id="trigger-fx-list" class="trigger-fx-list"></div>
                             <div id="trigger-error"></div>
                             <div class="trigger-editor-actions">
                                 <button class="trigger-btn primary" id="trigger-save-btn">Save</button>
                                 <button class="trigger-btn" id="trigger-cancel-btn">Cancel</button>
                             </div>
                         </div>
-                        <button class="trigger-btn" id="add-trigger-btn">+ Add Trigger</button>
+                        <div class="trigger-io-row">
+                            <button class="trigger-btn" id="add-trigger-btn">+ Add Trigger</button>
+                            <button class="trigger-btn" id="trigger-enable-all-btn">Enable All</button>
+                            <button class="trigger-btn" id="trigger-disable-all-btn">Disable All</button>
+                        </div>
+                    </div>
+                    <div class="settings-section" id="trigger-io-section">
+                        <div class="settings-section-title">Import / Export</div>
+                        <div class="trigger-io-actions">
+                            <button class="trigger-btn" id="trigger-export-btn">Export JSON</button>
+                            <button class="trigger-btn" id="trigger-import-btn">Import JSON</button>
+                        </div>
+                        <textarea id="trigger-io-area" spellcheck="false" placeholder="Paste exported JSON here to import..."></textarea>
+                        <div id="trigger-io-error"></div>
                     </div>
                 </div>
                 <div class="settings-tab-panel" id="tab-stats">
@@ -793,6 +1084,27 @@
                         row.appendChild(badge);
                     }
 
+                    if (t.fx) {
+                        var fxNames = Object.keys(t.fx);
+                        var show    = fxNames.slice(0, 2);
+                        show.forEach(function(fxName) {
+                            var fxBadge = document.createElement('span');
+                            fxBadge.className = 'trigger-row-badge';
+                            fxBadge.style.color = '#3ad4b8';
+                            fxBadge.style.borderColor = '#1c6b60';
+                            fxBadge.textContent = fxName;
+                            row.appendChild(fxBadge);
+                        });
+                        if (fxNames.length > 2) {
+                            var moreBadge = document.createElement('span');
+                            moreBadge.className = 'trigger-row-badge';
+                            moreBadge.style.color = '#3ad4b8';
+                            moreBadge.style.borderColor = '#1c6b60';
+                            moreBadge.textContent = '+' + (fxNames.length - 2) + ' more';
+                            row.appendChild(moreBadge);
+                        }
+                    }
+
                     if (!t.isDefault) {
                         var del = document.createElement('button');
                         del.className = 'trigger-delete-btn';
@@ -819,12 +1131,169 @@
                 });
             }
 
+            // Build the grouped, collapsible FX editor.
+            // savedFX: { [fxName]: { [paramKey]: value } } or null
+            // _fxGroupOpen tracks which groups are expanded; persists across open/close.
+            var _fxGroupOpen = {};
+
+            function renderFXEditor(savedFX) {
+                var container = document.getElementById('trigger-fx-list');
+                if (!container) { return; }
+                container.innerHTML = '';
+
+                // Collect groups in order
+                var groups = [];
+                var groupMap = {};
+                Triggers.FX_DEFS.forEach(function(def) {
+                    if (!groupMap[def.group]) {
+                        groupMap[def.group] = [];
+                        groups.push(def.group);
+                    }
+                    groupMap[def.group].push(def);
+                });
+
+                groups.forEach(function(groupName) {
+                    var defs        = groupMap[groupName];
+                    var activeCount = defs.filter(function(d) { return savedFX && savedFX[d.name]; }).length;
+
+                    // Default: open groups that have active items only
+                    if (_fxGroupOpen[groupName] === undefined) {
+                        _fxGroupOpen[groupName] = activeCount > 0;
+                    }
+                    var open = _fxGroupOpen[groupName];
+
+                    // Group header
+                    var header = document.createElement('div');
+                    header.className = 'trigger-fx-group-header';
+
+                    var arrow = document.createElement('span');
+                    arrow.className = 'trigger-fx-group-arrow';
+                    arrow.textContent = open ? '\u25bc' : '\u25b6';
+
+                    var nameSpan = document.createElement('span');
+                    nameSpan.className = 'trigger-fx-group-name';
+                    nameSpan.textContent = groupName;
+
+                    var countSpan = document.createElement('span');
+                    countSpan.className = 'trigger-fx-group-count';
+                    if (activeCount > 0) { countSpan.textContent = activeCount + ' on'; }
+
+                    header.appendChild(arrow);
+                    header.appendChild(nameSpan);
+                    header.appendChild(countSpan);
+                    container.appendChild(header);
+
+                    // Group items
+                    var itemsDiv = document.createElement('div');
+                    itemsDiv.className = 'trigger-fx-group-items' + (open ? '' : ' collapsed');
+
+                    defs.forEach(function(def) {
+                        var saved   = savedFX && savedFX[def.name];
+                        var enabled = !!saved;
+
+                        var item = document.createElement('div');
+                        item.className = 'trigger-fx-item' + (enabled ? ' active' : '');
+                        item.dataset.fx = def.name;
+
+                        var itemHeader = document.createElement('div');
+                        itemHeader.className = 'trigger-fx-header';
+
+                        var toggleLabel = document.createElement('label');
+                        toggleLabel.className = 'toggle-switch';
+                        var chk = document.createElement('input');
+                        chk.type = 'checkbox';
+                        chk.checked = enabled;
+                        var track = document.createElement('span');
+                        track.className = 'toggle-track';
+                        toggleLabel.appendChild(chk);
+                        toggleLabel.appendChild(track);
+
+                        var fxNameSpan = document.createElement('span');
+                        fxNameSpan.className = 'trigger-fx-name';
+                        fxNameSpan.textContent = def.name;
+
+                        var paramsDiv = document.createElement('div');
+                        paramsDiv.className = 'trigger-fx-params';
+                        def.params.forEach(function(p) {
+                            var group = document.createElement('div');
+                            group.className = 'fx-param-group';
+                            var lbl = document.createElement('label');
+                            lbl.textContent = p.label;
+                            var inp = document.createElement('input');
+                            inp.className = 'fx-param-input';
+                            inp.type = p.type === 'color' ? 'color' : 'number';
+                            inp.dataset.key = p.key;
+                            inp.dataset.paramType = p.type;
+                            if (p.type === 'number') { inp.step = 'any'; inp.min = '0'; }
+                            inp.value = (saved && saved[p.key] !== undefined) ? saved[p.key] : p.default;
+                            group.appendChild(lbl);
+                            group.appendChild(inp);
+                            paramsDiv.appendChild(group);
+                        });
+
+                        var previewBtn = document.createElement('button');
+                        previewBtn.className = 'trigger-fx-preview-btn';
+                        previewBtn.textContent = 'Preview';
+                        previewBtn.addEventListener('click', function() {
+                            if (typeof window.FX !== 'object' || typeof window.FX[def.name] !== 'function') { return; }
+                            var args = def.params.map(function(p) {
+                                var inp = paramsDiv.querySelector('[data-key="' + p.key + '"]');
+                                var v   = inp ? inp.value : p.default;
+                                return p.type === 'number' ? Number(v) : v;
+                            });
+                            window.FX[def.name].apply(null, args);
+                        });
+
+                        itemHeader.appendChild(toggleLabel);
+                        itemHeader.appendChild(fxNameSpan);
+                        itemHeader.appendChild(previewBtn);
+                        item.appendChild(itemHeader);
+                        item.appendChild(paramsDiv);
+
+                        chk.addEventListener('change', function() {
+                            item.classList.toggle('active', chk.checked);
+                            // Update the group active count badge
+                            var on = itemsDiv.querySelectorAll('.trigger-fx-item.active').length;
+                            countSpan.textContent = on > 0 ? on + ' on' : '';
+                        });
+
+                        itemsDiv.appendChild(item);
+                    });
+
+                    header.addEventListener('click', function() {
+                        var isCollapsed = itemsDiv.classList.toggle('collapsed');
+                        _fxGroupOpen[groupName] = !isCollapsed;
+                        arrow.textContent = isCollapsed ? '\u25b6' : '\u25bc';
+                    });
+
+                    container.appendChild(itemsDiv);
+                });
+            }
+
+            // Collect FX map from editor. Returns null if nothing enabled.
+            function collectFX() {
+                var result = null;
+                document.querySelectorAll('#trigger-fx-list .trigger-fx-item').forEach(function(item) {
+                    var chk = item.querySelector('input[type="checkbox"]');
+                    if (!chk || !chk.checked) { return; }
+                    var fxName = item.dataset.fx;
+                    var params = {};
+                    item.querySelectorAll('.fx-param-input').forEach(function(inp) {
+                        params[inp.dataset.key] = inp.dataset.paramType === 'number' ? Number(inp.value) : inp.value;
+                    });
+                    if (!result) { result = {}; }
+                    result[fxName] = params;
+                });
+                return result;
+            }
+
             function openEditor(idx) {
                 var triggers = Triggers.getTriggers();
                 _editingIdx = idx;
                 var t = triggers[idx];
                 document.getElementById('trigger-pattern-input').value = t.pattern;
                 document.getElementById('trigger-body-input').value = t.body;
+                renderFXEditor(t.fx || null);
                 document.getElementById('trigger-error').textContent = '';
                 document.getElementById('trigger-error').classList.remove('visible');
                 document.getElementById('trigger-editor').classList.add('visible');
@@ -835,6 +1304,7 @@
                 _editingIdx = -1;
                 document.getElementById('trigger-pattern-input').value = '';
                 document.getElementById('trigger-body-input').value = '';
+                renderFXEditor(null);
                 document.getElementById('trigger-error').textContent = '';
                 document.getElementById('trigger-error').classList.remove('visible');
                 document.getElementById('trigger-editor').classList.add('visible');
@@ -854,13 +1324,14 @@
             document.getElementById('trigger-save-btn').addEventListener('click', function() {
                 var pattern = document.getElementById('trigger-pattern-input').value.trim();
                 var body    = document.getElementById('trigger-body-input').value;
+                var fx      = collectFX();
                 var errEl   = document.getElementById('trigger-error');
 
                 var err;
                 if (_editingIdx === -1) {
-                    err = Triggers.addTrigger(pattern, body);
+                    err = Triggers.addTrigger(pattern, body, fx);
                 } else {
-                    err = Triggers.saveTrigger(_editingIdx, pattern, body);
+                    err = Triggers.saveTrigger(_editingIdx, pattern, body, fx);
                 }
 
                 if (err) {
@@ -880,6 +1351,67 @@
             document.getElementById('add-trigger-btn').addEventListener('click', function() {
                 openNewEditor();
             });
+
+            // Enable All / Disable All
+            document.getElementById('trigger-enable-all-btn').addEventListener('click', function() {
+                Triggers.setAllEnabled(true);
+                renderTriggerList();
+            });
+
+            document.getElementById('trigger-disable-all-btn').addEventListener('click', function() {
+                Triggers.setAllEnabled(false);
+                renderTriggerList();
+            });
+
+            // Export
+            document.getElementById('trigger-export-btn').addEventListener('click', function() {
+                var area   = document.getElementById('trigger-io-area');
+                var errEl  = document.getElementById('trigger-io-error');
+                area.value = Triggers.exportTriggers();
+                area.classList.add('visible');
+                errEl.classList.remove('visible');
+                area.select();
+            });
+
+            // Import
+            document.getElementById('trigger-import-btn').addEventListener('click', function() {
+                var area  = document.getElementById('trigger-io-area');
+                var errEl = document.getElementById('trigger-io-error');
+                var isVisible = area.classList.contains('visible');
+
+                if (!isVisible) {
+                    area.value = '';
+                    area.classList.add('visible');
+                    errEl.classList.remove('visible');
+                    area.focus();
+                    document.getElementById('trigger-import-btn').textContent = 'Apply Import';
+                    return;
+                }
+
+                var json = area.value.trim();
+                if (!json) {
+                    area.classList.remove('visible');
+                    errEl.classList.remove('visible');
+                    document.getElementById('trigger-import-btn').textContent = 'Import JSON';
+                    return;
+                }
+
+                var err = Triggers.importTriggers(json);
+                if (err) {
+                    errEl.textContent = err;
+                    errEl.classList.add('visible');
+                    return;
+                }
+
+                area.value = '';
+                area.classList.remove('visible');
+                errEl.classList.remove('visible');
+                document.getElementById('trigger-import-btn').textContent = 'Import JSON';
+                renderTriggerList();
+            });
+
+            // Hide IO area when switching away from Triggers tab
+            // (handled in the tab-click listener below)
 
             // Restart the stats interval if the modal is reopened with Stats already active.
             var observer = new MutationObserver(function() {
@@ -905,6 +1437,17 @@
                 if (btn.dataset.tab === 'tab-triggers') {
                     closeEditor();
                     renderTriggerList();
+                    // Reset import button label when leaving
+                } else {
+                    // Leaving triggers: reset import UI
+                    var area = document.getElementById('trigger-io-area');
+                    if (area) {
+                        area.classList.remove('visible');
+                        var importBtn = document.getElementById('trigger-import-btn');
+                        if (importBtn) { importBtn.textContent = 'Import JSON'; }
+                    }
+                    var ioErr = document.getElementById('trigger-io-error');
+                    if (ioErr) { ioErr.classList.remove('visible'); }
                 }
                 if (btn.dataset.tab === 'tab-stats') {
                     renderStats();
@@ -931,84 +1474,121 @@
         });
 
         // -----------------------------------------------------------------------
-        // Stats tab renderer
+        // Stats tab
         // -----------------------------------------------------------------------
-        var _gmcpRowsOpen  = false;
         var _statsInterval = null;
+        var _gmcpOpen      = false;   // is the GMCP In section expanded?
+        var _nsOpen        = {};      // which namespace payloads are expanded?
 
-        function fmtBytes(b) {
-            if (b < 1024)      { return b.toFixed(2) + ' B'; }
-            if (b < 1024*1024) { return (b / 1024).toFixed(2) + ' KB'; }
-            return (b / (1024*1024)).toFixed(2) + ' MB';
+        function _fmtBytes(b) {
+            if (b < 1024 * 1024) { return (b / 1024).toFixed(2) + ' KB'; }
+            return (b / (1024 * 1024)).toFixed(2) + ' MB';
         }
 
-        function fmtUptime(ms) {
-            var s   = Math.floor(ms / 1000);
-            var h   = Math.floor(s / 3600);
-            var m   = Math.floor((s % 3600) / 60);
+        function _fmtRate(b, sec) {
+            return sec > 0 ? _fmtBytes(b / sec) + '/s' : '—';
+        }
+
+        function _fmtUptime(ms) {
+            var s = Math.floor(ms / 1000);
+            var h = Math.floor(s / 3600);
+            var m = Math.floor((s % 3600) / 60);
             var sec = s % 60;
             if (h > 0) { return h + 'h ' + m + 'm ' + sec + 's'; }
             if (m > 0) { return m + 'm ' + sec + 's'; }
             return sec + 's';
         }
 
-        function statsRow(label, bytes, elapsedSec) {
-            var rate = elapsedSec > 0 ? fmtBytes(bytes / elapsedSec) + '/s' : '—';
-            return '<div class="stats-row">' +
-                '<span class="stats-row-label">' + label + '</span>' +
-                '<span class="stats-row-values">' +
-                    '<span class="stats-row-value">' + fmtBytes(bytes) + '</span>' +
-                    '<span class="stats-row-rate">' + rate + '</span>' +
-                '</span>' +
-            '</div>';
+        function _gmcpValue(ns) {
+            if (typeof Client === 'undefined' || !Client.GMCPStructs) { return undefined; }
+            var cur = Client.GMCPStructs;
+            var parts = ns.split('.');
+            for (var i = 0; i < parts.length; i++) {
+                if (cur == null || typeof cur !== 'object') { return undefined; }
+                cur = cur[parts[i]];
+            }
+            return cur;
         }
 
         function renderStats() {
             if (typeof Client === 'undefined' || !Client.getNetStats) { return; }
-            var s           = Client.getNetStats();
-            var now         = Date.now();
-            var elapsedMs   = (s.connectTime && s.connectTime > 0) ? (now - s.connectTime) : 0;
-            var elapsedSec  = elapsedMs / 1000;
+            var st  = Client.getNetStats();
+            var now = Date.now();
+            var ms  = (st.connectTime && st.connectTime > 0) ? (now - st.connectTime) : 0;
+            var sec = ms / 1000;
 
-            // Uptime
-            var overallEl = document.getElementById('stats-net-overall');
-            if (overallEl) {
-                var uptimeHtml = '<div class="stats-uptime">Connected for ' +
-                    (elapsedMs > 0 ? fmtUptime(elapsedMs) : 'not connected') +
-                    '</div>';
-                overallEl.innerHTML = uptimeHtml +
-                    statsRow('Sent',     s.totalBytesSent,     elapsedSec) +
-                    statsRow('Received', s.totalBytesReceived, elapsedSec);
+            // --- Overall section ---
+            var overall = document.getElementById('stats-net-overall');
+            if (overall) {
+                overall.innerHTML =
+                    '<div class="stats-uptime">Connected for ' + (ms > 0 ? _fmtUptime(ms) : 'not connected') + '</div>' +
+                    '<div class="stats-row"><span class="stats-row-label">Sent</span><div class="stats-row-right"><span class="stats-row-value">' + _fmtBytes(st.totalBytesSent) + '</span><span class="stats-row-rate">' + _fmtRate(st.totalBytesSent, sec) + '</span></div></div>' +
+                    '<div class="stats-row"><span class="stats-row-label">Received</span><div class="stats-row-right"><span class="stats-row-value">' + _fmtBytes(st.totalBytesReceived) + '</span><span class="stats-row-rate">' + _fmtRate(st.totalBytesReceived, sec) + '</span></div></div>';
             }
 
-            // GMCP In collapsible
+            // --- GMCP In section ---
             var gmcpEl = document.getElementById('stats-net-gmcp');
             if (!gmcpEl) { return; }
 
-            var namespaces = Object.keys(s.gmcpInBytes).sort();
-            var gmcpTotal  = namespaces.reduce(function(sum, k) { return sum + s.gmcpInBytes[k]; }, 0);
-            var gmcpRate   = elapsedSec > 0 ? fmtBytes(gmcpTotal / elapsedSec) + '/s' : '—';
+            var nsList  = Object.keys(st.gmcpInBytes).sort();
+            var total   = nsList.reduce(function(s, k) { return s + st.gmcpInBytes[k]; }, 0);
 
-            var rowsHtml = namespaces.map(function(ns) {
-                return statsRow(ns, s.gmcpInBytes[ns], elapsedSec);
-            }).join('');
+            // Build the whole section as a plain string — no grid, no display:contents.
+            // Each row is a simple flex div. Namespace rows get onclick attributes so
+            // there is zero ambiguity about what receives the click.
+            var h = '';
 
-            gmcpEl.innerHTML =
-                '<div class="stats-gmcp-header" id="stats-gmcp-header">' +
-                    '<span><span class="stats-gmcp-toggle">' + (_gmcpRowsOpen ? '&#9660;' : '&#9654;') + '</span>GMCP In</span>' +
-                    '<span class="stats-row-values">' +
-                        '<span class="stats-gmcp-total">' + fmtBytes(gmcpTotal) + '</span>' +
-                        '<span class="stats-row-rate">' + gmcpRate + '</span>' +
-                    '</span>' +
-                '</div>' +
-                '<div class="stats-gmcp-rows' + (_gmcpRowsOpen ? ' open' : '') + '">' +
-                    rowsHtml +
-                '</div>';
+            h += '<div class="stats-gmcp-header" onclick="_statsToggleGmcp()">';
+            h +=   '<span><span class="stats-gmcp-toggle">' + (_gmcpOpen ? '&#9660;' : '&#9654;') + '</span>GMCP In</span>';
+            h +=   '<div class="stats-row-right">';
+            h +=     '<span class="stats-gmcp-total">' + _fmtBytes(total) + '</span>';
+            h +=     '<span class="stats-row-rate">' + _fmtRate(total, sec) + '</span>';
+            h +=   '</div>';
+            h += '</div>';
 
-            document.getElementById('stats-gmcp-header').addEventListener('click', function() {
-                _gmcpRowsOpen = !_gmcpRowsOpen;
-                renderStats();
-            });
+            if (_gmcpOpen) {
+                h += '<div class="stats-gmcp-rows open">';
+                nsList.forEach(function(ns, i) {
+                    var bytes   = st.gmcpInBytes[ns];
+                    var count   = st.gmcpInCount[ns] || 0;
+                    var isOpen  = !!_nsOpen[ns];
+                    var safeNs  = ns.replace(/"/g, '&quot;');
+
+                    h += '<div>';
+                    h +=   '<div class="stats-ns-row" onclick="_statsToggleNs(&quot;' + safeNs + '&quot;)">';
+                    h +=     '<span class="stats-row-label">';
+                    h +=       '<span class="stats-gmcp-toggle">' + (isOpen ? '&#9660;' : '&#9654;') + '</span>';
+                    h +=       ns + '<span class="stats-ns-count">(' + count + ')</span>';
+                    h +=     '</span>';
+                    h +=     '<div class="stats-row-right">';
+                    h +=       '<span class="stats-row-value">' + _fmtBytes(bytes) + '</span>';
+                    h +=       '<span class="stats-row-rate">' + _fmtRate(bytes, sec) + '</span>';
+                    h +=     '</div>';
+                    h +=   '</div>';
+
+                    if (isOpen) {
+                        var val  = _gmcpValue(ns);
+                        var text = val !== undefined ? JSON.stringify(val, null, 2) : '(no data)';
+                        text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        h += '<div class="stats-ns-payload open">' + text + '</div>';
+                    }
+
+                    h += '</div>';
+                });
+                h += '</div>';
+            }
+
+            gmcpEl.innerHTML = h;
+        }
+
+        function _statsToggleGmcp() {
+            _gmcpOpen = !_gmcpOpen;
+            renderStats();
+        }
+
+        function _statsToggleNs(ns) {
+            _nsOpen[ns] = !_nsOpen[ns];
+            renderStats();
         }
 
     </script>

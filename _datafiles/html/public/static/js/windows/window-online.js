@@ -216,6 +216,11 @@
         offOnLoad:     true,
         factory() {
             const el = createDOM();
+            // Request a fresh payload from the server. The response will
+            // arrive as a normal GMCP message and flow through update().
+            Client.GMCPRequest('Game');
+            // Populate from already-stored data after the dock has settled.
+            requestAnimationFrame(function() { update(); });
             return {
                 title:      'Online',
                 mount:      el,
@@ -279,10 +284,7 @@
     function update() {
         const game = Client.GMCPStructs.Game;
         if (!game || !game.Who || !Array.isArray(game.Who.Players)) { return; }
-
-        win.open();
         if (!win.isOpen()) { return; }
-
         render(game.Who.Players);
     }
 
@@ -291,6 +293,14 @@
     // -----------------------------------------------------------------------
     VirtualWindows.register({
         window:       win,
+        gmcpHandlers: ['Game'],
+        onGMCP() { update(); },
+    });
+
+    // Second registration with no window so the handler always fires,
+    // keeping the DOM current even while the window is hidden.
+    VirtualWindows.register({
+        window:       null,
         gmcpHandlers: ['Game'],
         onGMCP() { update(); },
     });

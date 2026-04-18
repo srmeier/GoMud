@@ -1168,10 +1168,10 @@ const Client = (() => {
     // Terminal
     // -----------------------------------------------------------------------
     const term = new window.Terminal({
-        cols: 80,
-        rows: 60,
+        cols:        80,
+        rows:        60,
         cursorBlink: true,
-        fontSize: 20,
+        fontSize:    20,
     });
     const fitAddon = new window.FitAddon.FitAddon();
     term.loadAddon(fitAddon);
@@ -1192,6 +1192,7 @@ const Client = (() => {
     let totalBytesReceived = 0;
     let totalBytesSent     = 0;
     const gmcpInBytes      = {};  // namespace -> bytes received
+    const gmcpInCount      = {};  // namespace -> number of payloads received
     let connectTime        = null; // Date of last successful connection
 
     // -----------------------------------------------------------------------
@@ -1356,6 +1357,7 @@ const Client = (() => {
                 const gmcpNamespace = gmcpPayload.slice(0, jsonIndex).trim();
                 const gmcpBody      = JSON.parse(gmcpPayload.slice(jsonIndex).trim());
                 gmcpInBytes[gmcpNamespace] = (gmcpInBytes[gmcpNamespace] || 0) + event.data.length;
+                gmcpInCount[gmcpNamespace] = (gmcpInCount[gmcpNamespace] || 0) + 1;
                 _applyGMCPPayload(gmcpNamespace, gmcpBody);
                 VirtualWindows.handleGMCP(gmcpNamespace, gmcpBody);
                 return;
@@ -1387,6 +1389,7 @@ const Client = (() => {
             totalBytesReceived = 0;
             totalBytesSent     = 0;
             Object.keys(gmcpInBytes).forEach(k => delete gmcpInBytes[k]);
+            Object.keys(gmcpInCount).forEach(k => delete gmcpInCount[k]);
             connectTime = Date.now();
             VirtualWindows.setConnected(true);
         };
@@ -1644,6 +1647,7 @@ const Client = (() => {
             totalBytesSent,
             totalBytesReceived,
             gmcpInBytes:  Object.assign({}, gmcpInBytes),
+            gmcpInCount:  Object.assign({}, gmcpInCount),
             connectTime,
         };
     }
