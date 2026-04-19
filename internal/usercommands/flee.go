@@ -14,6 +14,7 @@ func Flee(rest string, user *users.UserRecord, room *rooms.Room, flags events.Ev
 
 		user.Character.Aggro = &characters.Aggro{}
 		user.Character.Aggro.Type = characters.Flee
+		events.AddToQueue(events.AggroChanged{UserId: user.UserId, RoomId: user.Character.RoomId})
 	}
 
 	return true, nil

@@ -1,6 +1,6 @@
 help:
   command:
-    shop:
+    shops:
       - auction
 help-aliases:
   auction: [bid]

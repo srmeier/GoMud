@@ -69,6 +69,7 @@ func IdleMobs(e events.Event) events.ListenerReturn {
 				if user == nil || user.Character.RoomId != mob.Character.RoomId {
 					mob.Command(`emote mumbles about losing their quarry.`)
 					mob.Character.Aggro = nil
+					events.AddToQueue(events.AggroChanged{MobInstanceId: mob.InstanceId, RoomId: mob.Character.RoomId})
 				}
 			}
 			continue

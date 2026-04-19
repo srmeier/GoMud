@@ -174,7 +174,7 @@ class DockSlot {
         const popoutBtn = document.createElement('span');
         popoutBtn.className   = 'dock-panel-popout';
         popoutBtn.title       = 'Pop out';
-        popoutBtn.textContent = this.side === 'left' ? '\u2197' : '\u2196';  // NE / NW arrow
+        popoutBtn.textContent = '⧉';
         popoutBtn.addEventListener('click', onPopout);
 
         titlebar.appendChild(titleSpan);

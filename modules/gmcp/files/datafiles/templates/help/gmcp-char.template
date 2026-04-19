@@ -7,13 +7,15 @@ Requesting <ansi fg="white-bold">Char</ansi> returns the complete payload. Indiv
 <ansi fg="yellow-bold">Char.Info</ansi>
 Sent on login and whenever core character attributes change.
 
-  <ansi fg="cyan">account</ansi>    <ansi fg="green">string</ansi>  - The player's account (login) username
-  <ansi fg="cyan">name</ansi>       <ansi fg="green">string</ansi>  - The character's in-game name
-  <ansi fg="cyan">class</ansi>      <ansi fg="green">string</ansi>  - Derived profession/class based on skill ranks
-  <ansi fg="cyan">race</ansi>       <ansi fg="green">string</ansi>  - Character race
-  <ansi fg="cyan">alignment</ansi>  <ansi fg="green">string</ansi>  - Moral alignment label (e.g. "Good", "Evil")
-  <ansi fg="cyan">level</ansi>      <ansi fg="yellow">number</ansi>  - Current character level
-  <ansi fg="cyan">role</ansi>       <ansi fg="green">string</ansi>  - Account role (e.g. "player", "admin")
+  <ansi fg="cyan">account</ansi>         <ansi fg="green">string</ansi>  - The player's account (login) username
+  <ansi fg="cyan">name</ansi>            <ansi fg="green">string</ansi>  - The character's in-game name
+  <ansi fg="cyan">class</ansi>           <ansi fg="green">string</ansi>  - Derived profession/class based on skill ranks
+  <ansi fg="cyan">race</ansi>            <ansi fg="green">string</ansi>  - Character race
+  <ansi fg="cyan">alignment</ansi>       <ansi fg="green">string</ansi>  - Moral alignment label (e.g. "Good", "Evil")
+  <ansi fg="cyan">level</ansi>           <ansi fg="yellow">number</ansi>  - Current character level
+  <ansi fg="cyan">role</ansi>            <ansi fg="green">string</ansi>  - Account role (e.g. "player", "admin")
+  <ansi fg="cyan">skillpoints</ansi>     <ansi fg="yellow">number</ansi>  - Unspent skill points available for training
+  <ansi fg="cyan">trainingpoints</ansi>  <ansi fg="yellow">number</ansi>  - Unspent training points
 
 <ansi fg="yellow-bold">Char.Vitals</ansi>
 Sent whenever health or mana values change.
@@ -40,14 +42,12 @@ Sent when stats change (e.g. equipment changes, training).
   <ansi fg="cyan">perceptionmod</ansi> <ansi fg="yellow">number</ansi>  - Modifier applied to perception
 
 <ansi fg="yellow-bold">Char.Worth</ansi>
-Sent when gold, experience, or spendable points change.
+Sent when gold or experience changes.
 
-  <ansi fg="cyan">gold_carry</ansi>      <ansi fg="yellow">number</ansi>  - Gold currently carried
-  <ansi fg="cyan">gold_bank</ansi>       <ansi fg="yellow">number</ansi>  - Gold stored in the bank
-  <ansi fg="cyan">skillpoints</ansi>     <ansi fg="yellow">number</ansi>  - Unspent skill points available for training
-  <ansi fg="cyan">trainingpoints</ansi>  <ansi fg="yellow">number</ansi>  - Unspent training points
-  <ansi fg="cyan">xp</ansi>              <ansi fg="yellow">number</ansi>  - Total experience points earned
-  <ansi fg="cyan">tnl</ansi>             <ansi fg="yellow">number</ansi>  - Experience points needed to reach the next level
+  <ansi fg="cyan">gold_carry</ansi>  <ansi fg="yellow">number</ansi>  - Gold currently carried
+  <ansi fg="cyan">gold_bank</ansi>   <ansi fg="yellow">number</ansi>  - Gold stored in the bank
+  <ansi fg="cyan">xp</ansi>         <ansi fg="yellow">number</ansi>  - Total experience points earned
+  <ansi fg="cyan">tnl</ansi>        <ansi fg="yellow">number</ansi>  - Experience points needed to reach the next level
 
 <ansi fg="yellow-bold">Char.Affects</ansi>
 Sent when active buffs or debuffs change. The payload is an object keyed by effect name.
@@ -121,5 +121,20 @@ Sent when the player's pet status changes.
   <ansi fg="cyan">name</ansi>    <ansi fg="green">string</ansi>  - Pet's name
   <ansi fg="cyan">type</ansi>    <ansi fg="green">string</ansi>  - Pet species or type
   <ansi fg="cyan">hunger</ansi>  <ansi fg="green">string</ansi>  - Hunger state (e.g. "full")
+
+<ansi fg="yellow-bold">Char.Kills</ansi>
+Sent on login and updated whenever a mob or player kill or death is recorded.
+
+  <ansi fg="cyan">mob.total</ansi>           <ansi fg="yellow">number</ansi>  - Total number of mob kills
+  <ansi fg="cyan">mob.deaths</ansi>          <ansi fg="yellow">number</ansi>  - Total number of deaths caused by mobs
+  <ansi fg="cyan">mob.kd_ratio</ansi>        <ansi fg="yellow">number</ansi>  - Mob kill/death ratio
+  <ansi fg="cyan">mob.by_name</ansi>         <ansi fg="blue-bold">object</ansi>(<ansi fg="green">string</ansi>-><ansi fg="yellow">number</ansi>)  - Kill counts keyed by mob name
+  <ansi fg="cyan">mob.by_race</ansi>         <ansi fg="blue-bold">object</ansi>(<ansi fg="green">string</ansi>-><ansi fg="yellow">number</ansi>)  - Kill counts keyed by race name
+  <ansi fg="cyan">mob.by_area</ansi>         <ansi fg="blue-bold">object</ansi>(<ansi fg="green">string</ansi>-><ansi fg="yellow">number</ansi>)  - Kill counts keyed by zone/area name
+  <ansi fg="cyan">pvp.total</ansi>           <ansi fg="yellow">number</ansi>  - Total number of unique players killed
+  <ansi fg="cyan">pvp.deaths</ansi>          <ansi fg="yellow">number</ansi>  - Total number of PvP deaths
+  <ansi fg="cyan">pvp.kd_ratio</ansi>        <ansi fg="yellow">number</ansi>  - PvP kill/death ratio
+  <ansi fg="cyan">pvp.players</ansi>         <ansi fg="blue-bold">object</ansi>(<ansi fg="green">string</ansi>-><ansi fg="blue-bold">object</ansi>)  - Per-player kill entries keyed by character name
+  <ansi fg="cyan">pvp.players[n].count</ansi> <ansi fg="yellow">number</ansi>  - Number of times that player was killed
 
 <ansi fg="magenta-bold">See also:</ansi> <ansi fg="command">help gmcp</ansi>, <ansi fg="command">help gmcp-room</ansi>, <ansi fg="command">help gmcp-party</ansi>

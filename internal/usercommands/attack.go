@@ -183,9 +183,7 @@ func Attack(rest string, user *users.UserRecord, room *rooms.Room, flags events.
 
 			user.Character.SetAggro(0, attackMobInstanceId, characters.DefaultAttack)
 
-			user.SendText(
-				fmt.Sprintf(`You prepare to enter into mortal combat with <ansi fg="mobname">%s</ansi>.`, m.Character.Name),
-			)
+			events.AddToQueue(events.AggroChanged{UserId: user.UserId, RoomId: user.Character.RoomId})
 
 			if !isSneaking {
 				room.SendText(
@@ -239,9 +237,7 @@ func Attack(rest string, user *users.UserRecord, room *rooms.Room, flags events.
 
 			user.Character.SetAggro(attackPlayerId, 0, characters.DefaultAttack)
 
-			user.SendText(
-				fmt.Sprintf(`You prepare to enter into mortal combat with <ansi fg="username">%s</ansi>.`, p.Character.Name),
-			)
+			events.AddToQueue(events.AggroChanged{UserId: user.UserId, RoomId: user.Character.RoomId})
 
 			if !isSneaking {
 

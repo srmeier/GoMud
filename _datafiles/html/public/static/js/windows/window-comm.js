@@ -186,7 +186,7 @@
     const win = new VirtualWindow('Communications', {
         dock:          'right',
         defaultDocked: true,
-        dockedHeight:  500,
+        dockedHeight:  290,
         factory() {
             const el = createDOM();
             return {

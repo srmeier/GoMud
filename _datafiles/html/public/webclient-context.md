@@ -14,13 +14,14 @@ static/js/fx.js                                  Visual effects library (FX glob
 static/js/triggers.js                            Text-trigger engine (Triggers global)
 static/js/windows/window-gametime.js             Time & Date window (left dock)
 static/js/windows/window-character.js            Character window (left dock)
+static/js/windows/window-gear.js                 Gear window (left dock)
 static/js/windows/window-vitals.js               Vitals window (left dock)
-static/js/windows/window-status.js               Status window (left dock)
+static/js/windows/window-status.js               Worth window (left dock)
 static/js/windows/window-party.js                Party window (left dock)
 static/js/windows/window-map.js                  Map window (right dock)
+static/js/windows/window-room.js                 Room Info window (right dock)
 static/js/windows/window-online.js               Online Players window (right dock, off by default)
 static/js/windows/window-comm.js                 Communications window (right dock)
-static/js/windows/window-debug-log.js            Debug Log window (right dock)
 static/js/windows/window-modal.js                Help/content modal overlay (global, no dock)
 static/css/windows.css                           Shared dock/panel styles
 ```
@@ -38,9 +39,10 @@ one `<script>` tag in the appropriate dock comment block.
 | File | Title | Tabs | GMCP namespaces |
 |---|---|---|---|
 | `window-gametime.js` | Time & Date | — | `Gametime` |
-| `window-character.js` | Character | Overview, Backpack, Quests, Skills, Jobs | `Char.Info`, `Char.Stats`, `Char.Inventory`, `Char.Inventory.Backpack`, `Char.Quests`, `Char.Skills`, `Char.Jobs`, `Char` |
+| `window-character.js` | Character | Overview, Quests, Skills, Jobs, Effects | `Char.Info`, `Char.Stats`, `Char.Quests`, `Char.Skills`, `Char.Jobs`, `Char.Affects`, `Char` |
+| `window-gear.js` | Gear | Worn, Backpack | `Char.Inventory`, `Char.Inventory.Backpack`, `Char` |
 | `window-vitals.js` | Vitals | — | `Char.Vitals`, `Char` |
-| `window-status.js` | Status | Worth, Effects | `Char.Worth`, `Char.Affects`, `Char` |
+| `window-status.js` | Worth | — | `Char.Worth`, `Char` |
 | `window-party.js` | Party | — | `Party`, `Party.Vitals` |
 
 ### Right dock
@@ -48,9 +50,9 @@ one `<script>` tag in the appropriate dock comment block.
 | File | Title | Tabs | GMCP namespaces | Notes |
 |---|---|---|---|---|
 | `window-map.js` | Map | — | `Room`, `World` | `offOnLoad: false` |
+| `window-room.js` | Room Info | — | `Room.Info` | `offOnLoad: false` |
 | `window-online.js` | Online | — | `Game` | `offOnLoad: true` — hidden until user opens it |
 | `window-comm.js` | Communications | Say, Whisper, Party, Broadcasts | `Comm` | |
-| `window-debug-log.js` | Debug Log | — | `*` (all namespaces) | `offOnLoad: true` |
 
 ### Modal overlay
 
@@ -182,7 +184,7 @@ new VirtualWindow(id, {
 
 Setting `offOnLoad: true` initialises `_win` to `false`, so `VirtualWindows.openAll()`
 skips the window entirely. It will not open until the user explicitly opens it (e.g.
-via a terminal command). Use this for optional diagnostic windows like Debug Log.
+via a terminal command).
 
 The `factory()` function must:
 - Create the content DOM element
@@ -219,7 +221,7 @@ VirtualWindows.register({
 - Multiple modules may register for the same namespace — all matching handlers
   are called.
 - The special namespace `'*'` matches every incoming GMCP payload regardless of
-  name. Use it for catch-all handlers such as debug loggers.
+  name.
 - If a handler's associated `window` is closed (`_win === false`), it is
   skipped entirely.
 - Pass `window: null` for handlers that have no associated window (e.g. the
@@ -384,13 +386,9 @@ Commands offered depend on item type/subtype from the GMCP payload:
 
 ---
 
-## Status Window (window-status.js)
+## Worth Window (window-status.js)
 
-### Worth tab
-
-- **Skill Points** badge — clickable, sends `Help stat-train` GMCP request.
-- **Training Points** badge — clickable, sends `Help train` GMCP request.
-- Both badges highlight with `cursor: help`.
+Displays XP progress bar and gold (carried + bank). No tabs.
 
 ---
 

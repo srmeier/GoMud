@@ -23,10 +23,24 @@ func List(rest string, user *users.UserRecord, room *rooms.Room, flags events.Ev
 
 	listedSomething := false
 
+	targetPlayerId := 0
+	targetMobInstanceId := 0
+	if rest != `` {
+		targetPlayerId, targetMobInstanceId = room.FindByName(rest, rooms.FindMerchant)
+		if targetPlayerId == 0 && targetMobInstanceId == 0 {
+			user.SendText("You don't see that here.")
+			return true, nil
+		}
+	}
+
 	for _, mobId := range room.GetMobs(rooms.FindMerchant) {
 
 		mob := mobs.GetInstance(mobId)
 		if mob == nil {
+			continue
+		}
+
+		if targetMobInstanceId != 0 && mob.InstanceId != targetMobInstanceId {
 			continue
 		}
 
@@ -385,6 +399,10 @@ func List(rest string, user *users.UserRecord, room *rooms.Room, flags events.Ev
 	for _, uid := range room.GetPlayers(rooms.FindMerchant) {
 
 		if uid == user.UserId {
+			continue
+		}
+
+		if targetPlayerId != 0 && uid != targetPlayerId {
 			continue
 		}
 

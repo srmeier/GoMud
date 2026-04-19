@@ -10,9 +10,10 @@
     overflow: hidden;
 }
 
-/* Hide maximize, fullscreen, and close controls — windows are managed via settings */
+/* Hide maximize, fullscreen, minimize, and close controls — windows are managed via settings */
 .wb-max  { display: none; }
 .wb-full { display: none; }
+.wb-min  { display: none; }
 .wb-close { display: none; }
 
 /* -------------------------------------------------------------------------
@@ -164,7 +165,7 @@
     opacity: 0.8;
 }
 .wb-dock-btn::after {
-    content: '\2913';  /* downwards arrow to bar - visually suggests docking */
+    content: '\25A3';  /* white square containing black square — embed into panel */
 }
 .wb-dock-btn:hover { opacity: 1; }
 

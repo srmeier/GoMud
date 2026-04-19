@@ -1,4 +1,4 @@
-/* global Client, VirtualWindow, VirtualWindows, injectStyles, uiMenu */
+/* global Client, VirtualWindow, VirtualWindows, injectStyles */
 
 /**
  * window-character.js
@@ -6,33 +6,28 @@
  * Virtual window: Character — left dock, tabbed.
  *
  * Tabs:
- *   Overview   — name, race/class, level, alignment, stats grid,
- *                HP/MP bars, equipment slots (with hover tooltips)
- *   Backpack   — carried items with carry capacity, hover tooltips
- *   Quests     — in-progress quest log, click to expand
- *   Skills     — learned skills with levels and max indicator
- *   Jobs       — profession completion and proficiency
+ *   Overview — name, race/class, level, alignment, stats grid, point badges
+ *   Quests   — in-progress quest log, click to expand
+ *   Skills   — learned skills with levels and max indicator
+ *   Jobs     — profession completion and proficiency
+ *   Effects  — active buffs/debuffs with duration bars
  *
  * Responds to GMCP namespaces:
- *   Char                    — full character update
- *   Char.Info               — name, race, class, level, alignment
- *   Char.Vitals             — HP / MP
- *   Char.Stats              — six core stats
- *   Char.Inventory          — worn equipment + backpack
- *   Char.Inventory.Backpack — backpack items only
- *   Char.Quests             — quest progress
- *   Char.Skills             — skill names, levels, max flag
- *   Char.Jobs               — profession completion and proficiency
+ *   Char         — full character update
+ *   Char.Info    — name, race, class, level, alignment, skill/training points
+ *   Char.Stats   — six core stats
+ *   Char.Quests  — quest progress
+ *   Char.Skills  — skill names, levels, max flag
+ *   Char.Jobs    — profession completion and proficiency
+ *   Char.Affects — active buffs/debuffs
  *
  * Reads:
  *   Client.GMCPStructs.Char.Info
- *   Client.GMCPStructs.Char.Vitals
  *   Client.GMCPStructs.Char.Stats
- *   Client.GMCPStructs.Char.Inventory.Worn
- *   Client.GMCPStructs.Char.Inventory.Backpack
  *   Client.GMCPStructs.Char.Quests
  *   Client.GMCPStructs.Char.Skills
  *   Client.GMCPStructs.Char.Jobs
+ *   Client.GMCPStructs.Char.Affects
  */
 
 'use strict';
@@ -136,65 +131,7 @@
         .cw-align-neutral { color: #666;    }
         .cw-align-evil    { color: #e06060; }
 
-
-        /* ---- Equipment section (inside Overview) ---- */
-        #cw-equip-section {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            margin-top: 4px;
-            padding-top: 6px;
-            border-top: 1px solid #0f3333;
-        }
-
-        .cw-equip-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            min-height: 18px;
-            border-bottom: 1px solid #0a1a16;
-            padding-bottom: 2px;
-            cursor: default;
-        }
-
-        .cw-equip-row:last-child { border-bottom: none; }
-
-        .cw-equip-row:hover { background: #0a1e1a; }
-
-        .cw-equip-slot {
-            width: 54px;
-            font-size: 0.66em;
-            color: #7ab8a0;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            flex-shrink: 0;
-        }
-
-        .cw-equip-name {
-            flex: 1;
-            font-size: 0.76em;
-            color: #dffbd1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .cw-equip-name.empty  { color: #2a2a2a; font-style: italic; }
-        .cw-equip-name.cursed { color: #e06060; }
-        .cw-equip-name.quest  { color: #d4a843; }
-
-        .cw-equip-badge {
-            font-size: 0.58em;
-            padding: 1px 3px;
-            border-radius: 3px;
-            flex-shrink: 0;
-        }
-
-        .cw-equip-badge.cursed { background:#3d0f0f; color:#e06060; border:1px solid #6b1c1c; }
-        .cw-equip-badge.quest  { background:#2e2000; color:#d4a843; border:1px solid #6b5010; }
-        .cw-equip-badge.uses   { background:#1a1a2e; color:#9ab0d4; border:1px solid #2e4a6b; }
-
-        /* ---- Stats grid (inside Overview, above vitals) ---- */
+        /* ---- Stats grid (inside Overview) ---- */
         #cw-stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -202,6 +139,54 @@
             padding: 4px 0 2px;
             border-top: 1px solid #0f3333;
             border-bottom: 1px solid #0f3333;
+        }
+
+        /* ---- Points row (below stats grid) ---- */
+        #cw-points-row {
+            display: flex;
+            gap: 6px;
+            padding: 4px 0 2px;
+            border-bottom: 1px solid #0f3333;
+        }
+
+        .cw-point-badge {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2px 6px;
+            background: #0d2e28;
+            border: 1px solid #1c6b60;
+            border-radius: 3px;
+            cursor: help;
+            gap: 4px;
+        }
+
+        .cw-point-badge:hover {
+            background: #0f3333;
+        }
+
+        .cw-point-badge-label {
+            font-size: 0.62em;
+            color: #7ab8a0;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .cw-point-badge-value {
+            font-size: 0.8em;
+            color: #dffbd1;
+            font-weight: bold;
+        }
+
+        .cw-point-badge.has-points {
+            border-color: #3ad4b8;
+            background: #0d3d35;
+        }
+
+        .cw-point-badge.has-points .cw-point-badge-value {
+            color: #3ad4b8;
         }
 
         .cw-stat-cell {
@@ -252,79 +237,6 @@
             font-style: italic;
             max-width: 200px;
             display: none;
-        }
-
-        /* ---- Equipment tooltip ---- */
-        #cw-equip-tooltip {
-            position: fixed;
-            z-index: 99999;
-            pointer-events: none;
-            background: #0d2e28;
-            border: 1px solid #1c6b60;
-            border-radius: 6px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.7);
-            padding: 8px 10px;
-            min-width: 160px;
-            max-width: 260px;
-            display: none;
-        }
-
-        .cw-tt-name {
-            font-size: 0.85em;
-            font-weight: bold;
-            color: #dffbd1;
-            margin-bottom: 4px;
-            line-height: 1.3;
-        }
-
-        .cw-tt-name .cw-tt-details {
-            font-weight: normal;
-            font-style: italic;
-            color: #7ab8a0;
-        }
-
-        .cw-tt-name .cw-tt-details.cursed { color: #e06060; }
-        .cw-tt-name .cw-tt-details.quest  { color: #d4a843; }
-
-        .cw-tt-divider {
-            border: none;
-            border-top: 1px solid #1c6b60;
-            margin: 5px 0;
-        }
-
-        .cw-tt-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 8px;
-            font-size: 0.75em;
-            line-height: 1.6;
-        }
-
-        .cw-tt-row-label {
-            color: #7ab8a0;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            font-size: 0.88em;
-            flex-shrink: 0;
-        }
-
-        .cw-tt-row-value {
-            color: #dffbd1;
-            text-align: right;
-        }
-
-        .cw-tt-hint {
-            font-size: 0.73em;
-            color: #7ab8a0;
-            line-height: 1.4;
-            font-style: italic;
-        }
-
-        .cw-tt-hint .cw-tt-cmd {
-            font-style: normal;
-            color: #3ad4b8;
-            font-weight: bold;
         }
 
         /* ---- Quests tab ---- */
@@ -435,107 +347,6 @@
         #cw-quests .cq-item.expanded .cq-desc {
             display: block;
         }
-
-        /* ---- Backpack tab ---- */
-        #cw-backpack {
-            padding: 4px 6px;
-            gap: 3px;
-        }
-
-        #cw-bp-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 3px 2px 5px;
-            border-bottom: 1px solid #0f3333;
-            margin-bottom: 2px;
-            flex-shrink: 0;
-        }
-
-        #cw-bp-title {
-            font-size: 0.68em;
-            color: #7ab8a0;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        #cw-bp-count {
-            font-size: 0.68em;
-            color: #aaa;
-        }
-
-        #cw-bp-count .bp-count-num {
-            color: #dffbd1;
-        }
-
-        #cw-bp-count .bp-count-num.full {
-            color: #e06060;
-        }
-
-        #cw-bp-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-        }
-
-        .cw-bp-empty {
-            color: #444;
-            font-size: 0.78em;
-            font-style: italic;
-            text-align: center;
-            padding: 12px 0;
-        }
-
-        .cw-bp-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            min-height: 18px;
-            border-bottom: 1px solid #0a1a16;
-            padding-bottom: 2px;
-            cursor: default;
-            flex-shrink: 0;
-        }
-
-        .cw-bp-row:last-child { border-bottom: none; }
-
-        .cw-bp-row:hover { background: #0a1e1a; }
-
-        .cw-bp-type {
-            width: 54px;
-            font-size: 0.66em;
-            color: #7ab8a0;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            flex-shrink: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .cw-bp-name {
-            flex: 1;
-            font-size: 0.76em;
-            color: #dffbd1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .cw-bp-name.cursed { color: #e06060; }
-        .cw-bp-name.quest  { color: #d4a843; }
-
-        .cw-bp-badge {
-            font-size: 0.58em;
-            padding: 1px 3px;
-            border-radius: 3px;
-            flex-shrink: 0;
-        }
-
-        .cw-bp-badge.cursed { background:#3d0f0f; color:#e06060; border:1px solid #6b1c1c; }
-        .cw-bp-badge.quest  { background:#2e2000; color:#d4a843; border:1px solid #6b5010; }
-        .cw-bp-badge.uses   { background:#1a1a2e; color:#9ab0d4; border:1px solid #2e4a6b; }
 
         /* ---- Skills tab ---- */
         #cw-skills {
@@ -692,68 +503,108 @@
         .cjb-bar-fill.complete {
             background: #d4a843;
         }
+
+        /* ---- Effects tab ---- */
+        #cw-effects {
+            padding: 4px 6px;
+            gap: 4px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-content: flex-start;
+        }
+
+        .cw-affect-empty {
+            grid-column: 1 / -1;
+            color: #444;
+            font-size: 0.76em;
+            font-style: italic;
+            text-align: center;
+            padding: 14px 0;
+        }
+
+        .cw-affect-item {
+            background: #0a1e1a;
+            border: 1px solid #1c6b60;
+            border-radius: 4px;
+            padding: 4px 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .cw-affect-item.debuff {
+            border-color: #6b1c1c;
+            background: #1e0a0a;
+        }
+
+        .cw-affect-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .cw-affect-name {
+            font-size: 0.5em;
+            color: #dffbd1;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cw-affect-item.debuff .cw-affect-name { color: #f4a0a0; }
+
+        .cw-affect-source {
+            font-size: 0.63em;
+            color: #7ab8a0;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .cw-affect-item.debuff .cw-affect-source { color: #b87a7a; }
+
+        .cw-affect-mods {
+            font-size: 0.66em;
+            color: #7ab8a0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cw-affect-item.debuff .cw-affect-mods { color: #b87a7a; }
+
+        .cw-affect-dur-track {
+            width: 100%;
+            height: 4px;
+            background: #1a1a1a;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .cw-affect-dur-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: #1c6b60;
+            transition: width 1s linear;
+        }
+
+        .cw-affect-item.debuff .cw-affect-dur-fill { background: #6b1c1c; }
+
+        .cw-affect-dur-fill.permanent {
+            background: #3ad4b8;
+            width: 100% !important;
+        }
+
+        .cw-affect-item.debuff .cw-affect-dur-fill.permanent { background: #d43a3a; }
     `);
 
     // -----------------------------------------------------------------------
-    // Item hint — mirrors the GetLongDescription() logic from items/items.go.
-    // Returns an HTML string (may contain <span class="cw-tt-cmd">) or null.
+    // Stat tooltip
     // -----------------------------------------------------------------------
-    function _itemHint(item) {
-        const type    = (item.type    || '').toLowerCase();
-        const subtype = (item.subtype || '').toLowerCase();
-        const details = item.details || [];
-
-        function cmd(name) {
-            return '<span class="cw-tt-cmd">' + name + '</span>';
-        }
-
-        if (details.includes('quest')) {
-            return 'This is a quest item.';
-        }
-        if (type === 'readable') {
-            return 'You should probably ' + cmd('read') + ' this.';
-        }
-        if (subtype === 'drinkable') {
-            return 'You could probably ' + cmd('drink') + ' this.';
-        }
-        if (subtype === 'edible') {
-            return 'You could probably ' + cmd('eat') + ' this.';
-        }
-        if (type === 'lockpicks') {
-            return 'These are used with the ' + cmd('picklock') + ' command.';
-        }
-        if (type === 'key') {
-            return 'When you find the right door, keys are added to your ' + cmd('keyring') + ' automatically.';
-        }
-        if (subtype === 'wearable') {
-            return 'It looks like wearable ' + type + ' equipment.';
-        }
-        if (type === 'weapon') {
-            const handsDetail = details.find(d => d.endsWith('-handed'));
-            const handsText   = handsDetail ? handsDetail : '1-handed';
-            if (subtype === 'shooting') {
-                return 'A ' + handsText + ' ranged weapon. Can be fired into adjacent areas. (' + cmd('help shoot') + ')';
-            }
-            if (subtype === 'claws') {
-                return 'A ' + handsText + ' claws weapon. Can be dual wielded without training.';
-            }
-            return 'A ' + handsText + ' weapon.';
-        }
-        if (subtype === 'usable') {
-            return 'You could probably ' + cmd('use') + ' this.';
-        }
-        return null;
-    }
-
-    // -----------------------------------------------------------------------
-    // Tooltip
-    // Created lazily on first use so document.body is guaranteed to exist.
-    // -----------------------------------------------------------------------
-    let tooltip    = null;
-    let hideTimer  = null;
-    const rowItemData = new Map();
-
-    let statTooltip = null;
+    let statTooltip   = null;
     let statHideTimer = null;
 
     function ensureStatTooltip() {
@@ -768,11 +619,6 @@
         clearTimeout(statHideTimer);
         statTooltip.textContent = text;
         statTooltip.style.display = 'block';
-        positionStatTooltip(el);
-    }
-
-    function positionStatTooltip(el) {
-        if (!statTooltip) { return; }
         const rect = el.getBoundingClientRect();
         const ttW  = statTooltip.offsetWidth;
         const ttH  = statTooltip.offsetHeight;
@@ -783,145 +629,14 @@
         left = Math.max(8, left);
         let top = rect.top;
         if (top + ttH > vh - 8) { top = vh - ttH - 8; }
-        top = Math.max(8, top);
+        statTooltip.style.left = Math.max(8, top) + 'px';
         statTooltip.style.left = left + 'px';
-        statTooltip.style.top  = top  + 'px';
+        statTooltip.style.top  = Math.max(8, top) + 'px';
     }
 
     function hideStatTooltip() {
         if (!statTooltip) { return; }
         statHideTimer = setTimeout(() => { statTooltip.style.display = 'none'; }, 80);
-    }
-
-    function ensureTooltip() {
-        if (tooltip) { return; }
-        tooltip = document.createElement('div');
-        tooltip.id = 'cw-equip-tooltip';
-        document.body.appendChild(tooltip);
-    }
-
-    function showTooltip(rowEl, item) {
-        ensureTooltip();
-        clearTimeout(hideTimer);
-
-        // Build content
-        const details = (item.details && item.details.length > 0)
-            ? item.details.join(', ')
-            : null;
-
-        const detailClass = item.details && item.details.includes('cursed') ? 'cursed'
-                          : item.details && item.details.includes('quest')  ? 'quest'
-                          : '';
-
-        let html = '<div class="cw-tt-name">' + item.name;
-        if (details) {
-            html += ' <span class="cw-tt-details ' + detailClass + '">(' + details + ')</span>';
-        }
-        html += '</div>';
-
-        const rows = [];
-        if (item.type)    { rows.push({ label: 'Type',    value: item.type    }); }
-        if (item.subtype) { rows.push({ label: 'Subtype', value: item.subtype }); }
-        if (item.uses > 0){ rows.push({ label: 'Uses',    value: item.uses    }); }
-
-        if (rows.length > 0) {
-            html += '<hr class="cw-tt-divider">';
-            rows.forEach(r => {
-                html += '<div class="cw-tt-row">' +
-                    '<span class="cw-tt-row-label">' + r.label + '</span>' +
-                    '<span class="cw-tt-row-value">' + r.value + '</span>' +
-                '</div>';
-            });
-        }
-
-        const hint = _itemHint(item);
-        if (hint) {
-            html += '<hr class="cw-tt-divider">';
-            html += '<div class="cw-tt-hint">' + hint + '</div>';
-        }
-
-        tooltip.innerHTML = html;
-        tooltip.style.display = 'block';
-
-        positionTooltip(rowEl);
-    }
-
-    function positionTooltip(rowEl) {
-        if (!tooltip) { return; }
-        const rect = rowEl.getBoundingClientRect();
-        const ttW  = tooltip.offsetWidth;
-        const ttH  = tooltip.offsetHeight;
-        const vw   = window.innerWidth;
-        const vh   = window.innerHeight;
-
-        // Try to place to the right of the row; flip left if it would overflow
-        let left = rect.right + 8;
-        if (left + ttW > vw - 8) {
-            left = rect.left - ttW - 8;
-        }
-        left = Math.max(8, left);
-
-        // Align top with the row; shift up if it would overflow the bottom
-        let top = rect.top;
-        if (top + ttH > vh - 8) {
-            top = vh - ttH - 8;
-        }
-        top = Math.max(8, top);
-
-        tooltip.style.left = left + 'px';
-        tooltip.style.top  = top  + 'px';
-    }
-
-    function hideTooltip() {
-        if (!tooltip) { return; }
-        hideTimer = setTimeout(() => {
-            tooltip.style.display = 'none';
-        }, 80);
-    }
-
-    function attachTooltip(rowEl) {
-        rowEl.addEventListener('mouseenter', () => {
-            const item = rowItemData.get(rowEl);
-            if (item) { showTooltip(rowEl, item); }
-        });
-        rowEl.addEventListener('mouseleave', hideTooltip);
-        rowEl.addEventListener('mousemove',  () => {
-            if (tooltip.style.display === 'block') {
-                positionTooltip(rowEl);
-            }
-        });
-    }
-
-    // -----------------------------------------------------------------------
-    // Context menu helpers
-    // -----------------------------------------------------------------------
-    function _equipMenuItems(item) {
-        if (!item || !item.name) { return null; }
-        return [
-            { label: 'look '   + item.name, cmd: 'look '   + item.name },
-            { label: 'remove ' + item.name, cmd: 'remove ' + item.name },
-        ];
-    }
-
-    function _backpackMenuItems(item) {
-        if (!item || !item.name) { return null; }
-        const type    = (item.type    || '').toLowerCase();
-        const subtype = (item.subtype || '').toLowerCase();
-        const cmds = [{ label: 'look ' + item.name, cmd: 'look ' + item.name }];
-        if (type === 'weapon' || subtype === 'wearable') {
-            cmds.push({ label: 'equip ' + item.name, cmd: 'equip ' + item.name });
-        } else if (subtype === 'edible') {
-            cmds.push({ label: 'eat ' + item.name, cmd: 'eat ' + item.name });
-        } else if (subtype === 'drinkable') {
-            cmds.push({ label: 'drink ' + item.name, cmd: 'drink ' + item.name });
-        } else if (subtype === 'usable') {
-            cmds.push({ label: 'use ' + item.name, cmd: 'use ' + item.name });
-        } else if (subtype === 'throwable') {
-            cmds.push({ label: 'throw ' + item.name, cmd: 'throw ' + item.name });
-        } else if (type === 'readable') {
-            cmds.push({ label: 'read ' + item.name, cmd: 'read ' + item.name });
-        }
-        return cmds;
     }
 
     // -----------------------------------------------------------------------
@@ -952,19 +667,6 @@
         { key: 'perception', abbr: 'PER' },
     ];
 
-    const EQUIP_SLOTS = [
-        { key: 'head',    label: 'Head'    },
-        { key: 'neck',    label: 'Neck'    },
-        { key: 'body',    label: 'Body'    },
-        { key: 'weapon',  label: 'Weapon'  },
-        { key: 'offhand', label: 'Offhand' },
-        { key: 'gloves',  label: 'Gloves'  },
-        { key: 'belt',    label: 'Belt'    },
-        { key: 'ring',    label: 'Ring'    },
-        { key: 'legs',    label: 'Legs'    },
-        { key: 'feet',    label: 'Feet'    },
-    ];
-
     // -----------------------------------------------------------------------
     // DOM factory
     // -----------------------------------------------------------------------
@@ -972,22 +674,22 @@
         const cells = STAT_DEFS.map(d =>
             '<div class="cw-stat-cell">' +
                 '<span class="cw-stat-abbr">' + d.abbr + '</span>' +
-                '<span class="cw-stat-num" id="cw-stat-' + d.key + '">—</span>' +
+                '<span class="cw-stat-num" id="cw-stat-' + d.key + '">\u2014</span>' +
                 '<span class="cw-stat-mod" id="cw-stat-mod-' + d.key + '" style="display:none"></span>' +
             '</div>'
         ).join('');
-        return '<div id="cw-stats-grid">' + cells + '</div>';
-    }
-
-    function buildEquipSection() {
-        const rows = EQUIP_SLOTS.map(s =>
-            '<div class="cw-equip-row" id="cw-eqrow-' + s.key + '">' +
-                '<span class="cw-equip-slot">' + s.label + '</span>' +
-                '<span class="cw-equip-name empty" id="cw-eq-' + s.key + '">empty</span>' +
-                '<span class="cw-equip-badge" id="cw-eqb-' + s.key + '" style="display:none"></span>' +
-            '</div>'
-        ).join('');
-        return '<div id="cw-equip-section">' + rows + '</div>';
+        const pointsRow =
+            '<div id="cw-points-row">' +
+                '<div class="cw-point-badge" id="cw-badge-sp">' +
+                    '<span class="cw-point-badge-label">Skill Pts</span>' +
+                    '<span class="cw-point-badge-value" id="cw-sp">\u2014</span>' +
+                '</div>' +
+                '<div class="cw-point-badge" id="cw-badge-tp">' +
+                    '<span class="cw-point-badge-label">Train Pts</span>' +
+                    '<span class="cw-point-badge-value" id="cw-tp">\u2014</span>' +
+                '</div>' +
+            '</div>';
+        return '<div id="cw-stats-grid">' + cells + '</div>' + pointsRow;
     }
 
     function createDOM() {
@@ -996,26 +698,17 @@
         el.innerHTML =
             '<div class="cw-tab-bar">' +
                 '<button class="cw-tab-btn active" data-panel="cw-overview">Overview</button>' +
-                '<button class="cw-tab-btn"        data-panel="cw-backpack">Backpack</button>' +
                 '<button class="cw-tab-btn"        data-panel="cw-quests">Quests</button>' +
                 '<button class="cw-tab-btn"        data-panel="cw-skills">Skills</button>' +
                 '<button class="cw-tab-btn"        data-panel="cw-jobs">Jobs</button>' +
+                '<button class="cw-tab-btn"        data-panel="cw-effects">Effects</button>' +
             '</div>' +
 
             '<div class="cw-tab-panel active" id="cw-overview">' +
-                '<div id="cw-char-name">—</div>' +
-                '<div id="cw-char-level">Level —</div>' +
+                '<div id="cw-char-name">\u2014</div>' +
+                '<div id="cw-char-level">Level \u2014</div>' +
                 '<div id="cw-char-alignment"></div>' +
                 buildStatsGrid() +
-                buildEquipSection() +
-            '</div>' +
-
-            '<div class="cw-tab-panel" id="cw-backpack">' +
-                '<div id="cw-bp-header">' +
-                    '<span id="cw-bp-title">Carried Items</span>' +
-                    '<span id="cw-bp-count"><span class="bp-count-num" id="cw-bp-num">0</span> / <span id="cw-bp-max">—</span></span>' +
-                '</div>' +
-                '<div id="cw-bp-list"><div class="cw-bp-empty">Empty</div></div>' +
             '</div>' +
 
             '<div class="cw-tab-panel" id="cw-quests">' +
@@ -1028,12 +721,15 @@
 
             '<div class="cw-tab-panel" id="cw-jobs">' +
                 '<div class="cjb-empty">No job progress</div>' +
+            '</div>' +
+
+            '<div class="cw-tab-panel" id="cw-effects">' +
+                '<div class="cw-affect-empty">No active effects</div>' +
             '</div>';
 
         document.body.appendChild(el);
         makeTabSwitcher(el);
 
-        // Attach click listeners and mod tooltips to stat cells
         STAT_DEFS.forEach(d => {
             const cell  = el.querySelector('.cw-stat-cell:has(#cw-stat-' + d.key + ')');
             if (cell) {
@@ -1046,17 +742,10 @@
             }
         });
 
-        // Attach tooltip and click-menu listeners to all equipment rows
-        EQUIP_SLOTS.forEach(s => {
-            const rowEl = el.querySelector('#cw-eqrow-' + s.key);
-            if (!rowEl) { return; }
-            attachTooltip(rowEl);
-            rowEl.addEventListener('click', function(e) {
-                const menuItems = _equipMenuItems(rowItemData.get(rowEl));
-                if (menuItems) { uiMenu(e, menuItems); }
-            });
-            rowEl.style.cursor = 'pointer';
-        });
+        const spBadge = el.querySelector('#cw-badge-sp');
+        if (spBadge) { spBadge.addEventListener('click', () => Client.GMCPRequest('Help stat-train')); }
+        const tpBadge = el.querySelector('#cw-badge-tp');
+        if (tpBadge) { tpBadge.addEventListener('click', () => Client.GMCPRequest('Help train')); }
 
         return el;
     }
@@ -1067,7 +756,7 @@
     const win = new VirtualWindow('Character', {
         dock:          'left',
         defaultDocked: true,
-        dockedHeight:  390,
+        dockedHeight:  200,
         factory() {
             const el = createDOM();
             return {
@@ -1078,7 +767,7 @@
                 x:          0,
                 y:          0,
                 width:      300,
-                height:     580,
+                height:     180,
                 header:     20,
                 bottom:     60,
             };
@@ -1090,41 +779,51 @@
     // -----------------------------------------------------------------------
     function updateOverview() {
         const info = Client.GMCPStructs.Char && Client.GMCPStructs.Char.Info;
+        if (!info) { return; }
 
-        if (info) {
-            const nameEl = document.getElementById('cw-char-name');
-            nameEl.innerHTML = '';
+        const nameEl = document.getElementById('cw-char-name');
+        nameEl.innerHTML = '';
 
-            const parts = [info.name, info.class].filter(Boolean);
-            if (parts.length) {
-                nameEl.appendChild(document.createTextNode(parts.join(' · ')));
-            }
-
-            if (info.race) {
-                if (parts.length) {
-                    nameEl.appendChild(document.createTextNode(' · '));
-                }
-                const raceSpan = document.createElement('span');
-                raceSpan.className   = 'cw-char-race';
-                raceSpan.textContent = info.race;
-                raceSpan.addEventListener('click', () => {
-                    Client.GMCPRequest('Help race ' + info.race.toLowerCase());
-                });
-                nameEl.appendChild(raceSpan);
-            }
-
-            if (!nameEl.textContent) {
-                nameEl.textContent = '—';
-            }
-
-            document.getElementById('cw-char-level').textContent = info.level ? 'Level ' + info.level : 'Level —';
-
-            const alignEl = document.getElementById('cw-char-alignment');
-            alignEl.textContent = info.alignment || '';
-            const a = (info.alignment || '').toLowerCase();
-            alignEl.className = 'cw-char-alignment ' +
-                (a.includes('good') ? 'cw-align-good' : a.includes('evil') ? 'cw-align-evil' : 'cw-align-neutral');
+        const parts = [info.name, info.class].filter(Boolean);
+        if (parts.length) {
+            nameEl.appendChild(document.createTextNode(parts.join(' \u00b7 ')));
         }
+
+        if (info.race) {
+            if (parts.length) {
+                nameEl.appendChild(document.createTextNode(' \u00b7 '));
+            }
+            const raceSpan = document.createElement('span');
+            raceSpan.className   = 'cw-char-race';
+            raceSpan.textContent = info.race;
+            raceSpan.addEventListener('click', () => {
+                Client.GMCPRequest('Help race ' + info.race.toLowerCase());
+            });
+            nameEl.appendChild(raceSpan);
+        }
+
+        if (!nameEl.textContent) {
+            nameEl.textContent = '\u2014';
+        }
+
+        document.getElementById('cw-char-level').textContent = info.level ? 'Level ' + info.level : 'Level \u2014';
+
+        const alignEl = document.getElementById('cw-char-alignment');
+        alignEl.textContent = info.alignment || '';
+        const a = (info.alignment || '').toLowerCase();
+        alignEl.className = 'cw-char-alignment ' +
+            (a.includes('good') ? 'cw-align-good' : a.includes('evil') ? 'cw-align-evil' : 'cw-align-neutral');
+
+        const sp      = info.skillpoints    || 0;
+        const tp      = info.trainingpoints || 0;
+        const spEl    = document.getElementById('cw-sp');
+        const tpEl    = document.getElementById('cw-tp');
+        const spBadge = document.getElementById('cw-badge-sp');
+        const tpBadge = document.getElementById('cw-badge-tp');
+        if (spEl)    { spEl.textContent = sp; }
+        if (tpEl)    { tpEl.textContent = tp; }
+        if (spBadge) { spBadge.classList.toggle('has-points', sp > 0); }
+        if (tpBadge) { tpBadge.classList.toggle('has-points', tp > 0); }
     }
 
     function updateStats() {
@@ -1133,7 +832,7 @@
 
         STAT_DEFS.forEach(def => {
             const el = document.getElementById('cw-stat-' + def.key);
-            if (el) { el.textContent = stats[def.key] || '—'; }
+            if (el) { el.textContent = stats[def.key] || '\u2014'; }
 
             const mod   = stats[def.key + 'mod'];
             const modEl = document.getElementById('cw-stat-mod-' + def.key);
@@ -1148,136 +847,6 @@
         });
     }
 
-    function updateEquipment() {
-        const inv = Client.GMCPStructs.Char && Client.GMCPStructs.Char.Inventory;
-        if (!inv || !inv.Worn) { return; }
-
-        const worn = inv.Worn;
-        EQUIP_SLOTS.forEach(slot => {
-            const item    = worn[slot.key];
-            const rowEl   = document.getElementById('cw-eqrow-' + slot.key);
-            const nameEl  = document.getElementById('cw-eq-'    + slot.key);
-            const badgeEl = document.getElementById('cw-eqb-'   + slot.key);
-
-            if (!item || !item.name) {
-                nameEl.textContent = 'empty';
-                nameEl.className   = 'cw-equip-name empty';
-                badgeEl.style.display = 'none';
-                rowItemData.delete(rowEl);
-                prevEquipNames[slot.key] = '';
-                return;
-            }
-
-            // Store full item data on the row for the tooltip
-            rowItemData.set(rowEl, item);
-
-            const isCursed = item.details && item.details.includes('cursed');
-            const isQuest  = item.details && item.details.includes('quest');
-
-            nameEl.textContent = item.name;
-            nameEl.className   = 'cw-equip-name' + (isCursed ? ' cursed' : isQuest ? ' quest' : '');
-
-            if (isCursed) {
-                badgeEl.textContent = 'cursed'; badgeEl.className = 'cw-equip-badge cursed'; badgeEl.style.display = '';
-            } else if (isQuest) {
-                badgeEl.textContent = 'quest';  badgeEl.className = 'cw-equip-badge quest';  badgeEl.style.display = '';
-            } else if (item.uses > 0) {
-                badgeEl.textContent = item.uses + 'x'; badgeEl.className = 'cw-equip-badge uses'; badgeEl.style.display = '';
-            } else {
-                badgeEl.style.display = 'none';
-            }
-        });
-    }
-
-    function updateBackpack() {
-        const inv = Client.GMCPStructs.Char && Client.GMCPStructs.Char.Inventory;
-        if (!inv || !inv.Backpack) { return; }
-
-        const bp      = inv.Backpack;
-        const items   = bp.items   || [];
-        const summary = bp.Summary || {};
-        const count   = summary.count !== undefined ? summary.count : items.length;
-        const max     = summary.max   || 0;
-
-        // Update carry capacity header
-        const numEl = document.getElementById('cw-bp-num');
-        const maxEl = document.getElementById('cw-bp-max');
-        if (numEl) {
-            numEl.textContent = count;
-            numEl.classList.toggle('full', max > 0 && count >= max);
-        }
-        if (maxEl) { maxEl.textContent = max || '—'; }
-
-        const list = document.getElementById('cw-bp-list');
-        if (!list) { return; }
-
-        // Remove old tooltip registrations for rows about to be replaced
-        list.querySelectorAll('.cw-bp-row').forEach(r => rowItemData.delete(r));
-        list.innerHTML = '';
-
-        if (items.length === 0) {
-            list.innerHTML = '<div class="cw-bp-empty">Empty</div>';
-            return;
-        }
-
-        // Sort: quest items first, then cursed, then alphabetical by name
-        const sorted = [...items].sort((a, b) => {
-            const aq = a.details && a.details.includes('quest');
-            const bq = b.details && b.details.includes('quest');
-            if (aq !== bq) { return aq ? -1 : 1; }
-            const ac = a.details && a.details.includes('cursed');
-            const bc = b.details && b.details.includes('cursed');
-            if (ac !== bc) { return ac ? -1 : 1; }
-            return (a.name || '').localeCompare(b.name || '');
-        });
-
-        sorted.forEach(item => {
-            const isCursed = item.details && item.details.includes('cursed');
-            const isQuest  = item.details && item.details.includes('quest');
-
-            const row = document.createElement('div');
-            row.className = 'cw-bp-row';
-
-            const typeEl  = document.createElement('span');
-            typeEl.className   = 'cw-bp-type';
-            typeEl.textContent = item.type || '';
-
-            const nameEl  = document.createElement('span');
-            nameEl.className   = 'cw-bp-name' + (isCursed ? ' cursed' : isQuest ? ' quest' : '');
-            nameEl.textContent = item.name || '';
-
-            const badgeEl = document.createElement('span');
-            badgeEl.className = 'cw-bp-badge';
-            if (isCursed) {
-                badgeEl.textContent = 'cursed';
-                badgeEl.classList.add('cursed');
-            } else if (isQuest) {
-                badgeEl.textContent = 'quest';
-                badgeEl.classList.add('quest');
-            } else if (item.uses > 0) {
-                badgeEl.textContent = item.uses + 'x';
-                badgeEl.classList.add('uses');
-            } else {
-                badgeEl.style.display = 'none';
-            }
-
-            row.appendChild(typeEl);
-            row.appendChild(nameEl);
-            row.appendChild(badgeEl);
-            list.appendChild(row);
-
-            // Register item data and attach tooltip — same mechanism as equipment
-            rowItemData.set(row, item);
-            attachTooltip(row);
-            row.style.cursor = 'pointer';
-            row.addEventListener('click', function(e) {
-                const menuItems = _backpackMenuItems(rowItemData.get(row));
-                if (menuItems) { uiMenu(e, menuItems); }
-            });
-
-        });
-    }
-
     function updateSkills() {
         const skillList = Client.GMCPStructs.Char && Client.GMCPStructs.Char.Skills;
         const panel = document.getElementById('cw-skills');
@@ -1288,9 +857,7 @@
             return;
         }
 
-        // Sort alphabetically by name
         const sorted = [...skillList].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-
         panel.innerHTML = '';
 
         sorted.forEach(function(skill) {
@@ -1341,7 +908,6 @@
             return;
         }
 
-        // Sort: highest completion first, then alphabetical
         const sorted = [...jobs].sort(function(a, b) {
             if (b.completion !== a.completion) { return b.completion - a.completion; }
             return (a.name || '').localeCompare(b.name || '');
@@ -1356,7 +922,6 @@
             const item = document.createElement('div');
             item.className    = 'cjb-item' + (complete ? ' complete' : '');
             item.style.cursor = 'help';
-
             item.innerHTML =
                 '<div class="cjb-header">' +
                     '<span class="cjb-name">' + (job.name || '') + '</span>' +
@@ -1378,12 +943,9 @@
 
     function updateQuests() {
         const quests = Client.GMCPStructs.Char && Client.GMCPStructs.Char.Quests;
-        if (!quests) { return; }
-
-        const panel = document.getElementById('cw-quests');
+        const panel  = document.getElementById('cw-quests');
         if (!panel) { return; }
 
-        // Preserve expanded state by quest name
         const expanded = new Set();
         panel.querySelectorAll('.cq-item.expanded').forEach(el => {
             expanded.add(el.dataset.questName);
@@ -1396,7 +958,6 @@
             return;
         }
 
-        // Sort: incomplete first (least complete first), completed last, then alphabetical within each group
         const sorted = [...quests].sort((a, b) => {
             const ac = (a.completion || 0) >= 100;
             const bc = (b.completion || 0) >= 100;
@@ -1428,16 +989,77 @@
         });
     }
 
+    function _isDebuff(mods) {
+        if (!mods) { return false; }
+        return Object.values(mods).some(v => v < 0);
+    }
+
+    function _formatMods(mods) {
+        if (!mods || Object.keys(mods).length === 0) { return ''; }
+        return Object.entries(mods)
+            .map(([k, v]) => (v >= 0 ? '+' : '') + v + ' ' + k)
+            .join('  ');
+    }
+
+    function updateEffects() {
+        const affects = Client.GMCPStructs.Char && Client.GMCPStructs.Char.Affects;
+        const panel   = document.getElementById('cw-effects');
+        if (!panel || !affects) { return; }
+
+        panel.innerHTML = '';
+
+        const keys = Object.keys(affects);
+        if (keys.length === 0) {
+            panel.innerHTML = '<div class="cw-affect-empty">No active effects</div>';
+            return;
+        }
+
+        keys.sort((a, b) => {
+            const da = _isDebuff(affects[a].affects);
+            const db = _isDebuff(affects[b].affects);
+            if (da !== db) { return da ? 1 : -1; }
+            const pa = affects[a].duration_max === -1;
+            const pb = affects[b].duration_max === -1;
+            if (pa !== pb) { return pa ? 1 : -1; }
+            return a.localeCompare(b);
+        });
+
+        keys.forEach(key => {
+            const aff     = affects[key];
+            const debuff  = _isDebuff(aff.affects);
+            const perma   = aff.duration_max === -1;
+            const modText = _formatMods(aff.affects);
+
+            let durPct = 100;
+            if (!perma && aff.duration_max > 0) {
+                durPct = Math.max(0, Math.min(100, Math.round((aff.duration_cur / aff.duration_max) * 100)));
+            }
+
+            const item = document.createElement('div');
+            item.className = 'cw-affect-item' + (debuff ? ' debuff' : '');
+            item.innerHTML =
+                '<div class="cw-affect-header">' +
+                    '<span class="cw-affect-name">' + (aff.name || key) + '</span>' +
+                    '<span class="cw-affect-source">' + (aff.type || '') + '</span>' +
+                '</div>' +
+                (modText ? '<div class="cw-affect-mods">' + modText + '</div>' : '') +
+                '<div class="cw-affect-dur-track">' +
+                    '<div class="cw-affect-dur-fill' + (perma ? ' permanent' : '') + '" style="width:' + durPct + '%"></div>' +
+                '</div>';
+
+            panel.appendChild(item);
+        });
+    }
+
     function update() {
         win.open();
         if (!win.isOpen()) { return; }
         updateOverview();
         updateStats();
-        updateEquipment();
-        updateBackpack();
         updateQuests();
         updateSkills();
         updateJobs();
+        updateEffects();
     }
 
     // -----------------------------------------------------------------------
@@ -1445,7 +1067,7 @@
     // -----------------------------------------------------------------------
     VirtualWindows.register({
         window:       win,
-        gmcpHandlers: ['Char.Info', 'Char.Stats', 'Char.Inventory', 'Char.Inventory.Backpack', 'Char.Quests', 'Char.Skills', 'Char.Jobs', 'Char'],
+        gmcpHandlers: ['Char.Info', 'Char.Stats', 'Char.Quests', 'Char.Skills', 'Char.Jobs', 'Char.Affects', 'Char'],
         onGMCP() { update(); },
     });
 

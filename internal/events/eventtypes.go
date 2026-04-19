@@ -286,6 +286,7 @@ type MobDeath struct {
 	CharacterName string
 	Level         int
 	PlayerDamage  map[int]int
+	KilledByUsers []int // user IDs of players who contributed damage; empty if killed by non-players
 }
 
 func (l MobDeath) Type() string { return `MobDeath` }
@@ -391,3 +392,12 @@ type RedrawPrompt struct {
 
 func (l RedrawPrompt) Type() string     { return `RedrawPrompt` }
 func (l RedrawPrompt) UniqueID() string { return `RedrawPrompt-` + strconv.Itoa(l.UserId) }
+
+// Fired when a player or mob enters or leaves aggro state
+type AggroChanged struct {
+	UserId        int // non-zero if a player's aggro state changed
+	MobInstanceId int // non-zero if a mob's aggro state changed
+	RoomId        int
+}
+
+func (a AggroChanged) Type() string { return `AggroChanged` }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/GoMudEngine/GoMud/internal/buffs"
 	"github.com/GoMudEngine/GoMud/internal/characters"
+	"github.com/GoMudEngine/GoMud/internal/events"
 	"github.com/GoMudEngine/GoMud/internal/mobs"
 	"github.com/GoMudEngine/GoMud/internal/rooms"
 	"github.com/GoMudEngine/GoMud/internal/users"
@@ -115,6 +116,8 @@ func Attack(rest string, mob *mobs.Mob, room *rooms.Room) (bool, error) {
 
 			mob.Character.SetAggro(attackPlayerId, 0, characters.DefaultAttack)
 
+			events.AddToQueue(events.AggroChanged{MobInstanceId: mob.InstanceId, RoomId: mob.Character.RoomId})
+
 			if !isSneaking {
 
 				u.SendText(fmt.Sprintf(`<ansi fg="mobname">%s</ansi> prepares to fight you!`, mob.Character.Name))
@@ -135,6 +138,8 @@ func Attack(rest string, mob *mobs.Mob, room *rooms.Room) (bool, error) {
 		if m != nil {
 
 			mob.Character.SetAggro(0, attackMobInstanceId, characters.DefaultAttack)
+
+			events.AddToQueue(events.AggroChanged{MobInstanceId: mob.InstanceId, RoomId: mob.Character.RoomId})
 
 			if !isSneaking {
 
