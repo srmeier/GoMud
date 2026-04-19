@@ -1,0 +1,125 @@
+<ansi fg="black-bold">.:</ansi> <ansi fg="magenta">Help for </ansi><ansi fg="command">gmcp-char</ansi>
+
+The <ansi fg="white-bold">Char</ansi> GMCP payload delivers character state to the client. It is sent in full on login and updated incrementally as individual sub-payloads whenever the relevant data changes.
+
+Requesting <ansi fg="white-bold">Char</ansi> returns the complete payload. Individual sub-payloads can be requested or received independently.
+
+<ansi fg="yellow-bold">Char.Info</ansi>
+Sent on login and whenever core character attributes change.
+
+  <ansi fg="cyan">account</ansi>    <ansi fg="green">string</ansi>  - The player's account (login) username
+  <ansi fg="cyan">name</ansi>       <ansi fg="green">string</ansi>  - The character's in-game name
+  <ansi fg="cyan">class</ansi>      <ansi fg="green">string</ansi>  - Derived profession/class based on skill ranks
+  <ansi fg="cyan">race</ansi>       <ansi fg="green">string</ansi>  - Character race
+  <ansi fg="cyan">alignment</ansi>  <ansi fg="green">string</ansi>  - Moral alignment label (e.g. "Good", "Evil")
+  <ansi fg="cyan">level</ansi>      <ansi fg="yellow">number</ansi>  - Current character level
+  <ansi fg="cyan">role</ansi>       <ansi fg="green">string</ansi>  - Account role (e.g. "player", "admin")
+
+<ansi fg="yellow-bold">Char.Vitals</ansi>
+Sent whenever health or mana values change.
+
+  <ansi fg="cyan">hp</ansi>      <ansi fg="yellow">number</ansi>  - Current hit points
+  <ansi fg="cyan">hp_max</ansi>  <ansi fg="yellow">number</ansi>  - Maximum hit points
+  <ansi fg="cyan">sp</ansi>      <ansi fg="yellow">number</ansi>  - Current spell points (mana)
+  <ansi fg="cyan">sp_max</ansi>  <ansi fg="yellow">number</ansi>  - Maximum spell points
+
+<ansi fg="yellow-bold">Char.Stats</ansi>
+Sent when stats change (e.g. equipment changes, training).
+
+  <ansi fg="cyan">strength</ansi>      <ansi fg="yellow">number</ansi>  - Base strength value
+  <ansi fg="cyan">strengthmod</ansi>   <ansi fg="yellow">number</ansi>  - Modifier applied to strength (from buffs, gear, etc.)
+  <ansi fg="cyan">speed</ansi>         <ansi fg="yellow">number</ansi>  - Base speed value
+  <ansi fg="cyan">speedmod</ansi>      <ansi fg="yellow">number</ansi>  - Modifier applied to speed
+  <ansi fg="cyan">smarts</ansi>        <ansi fg="yellow">number</ansi>  - Base smarts (intelligence) value
+  <ansi fg="cyan">smartsmod</ansi>     <ansi fg="yellow">number</ansi>  - Modifier applied to smarts
+  <ansi fg="cyan">vitality</ansi>      <ansi fg="yellow">number</ansi>  - Base vitality (constitution) value
+  <ansi fg="cyan">vitalitymod</ansi>   <ansi fg="yellow">number</ansi>  - Modifier applied to vitality
+  <ansi fg="cyan">mysticism</ansi>     <ansi fg="yellow">number</ansi>  - Base mysticism (magic aptitude) value
+  <ansi fg="cyan">mysticismmod</ansi>  <ansi fg="yellow">number</ansi>  - Modifier applied to mysticism
+  <ansi fg="cyan">perception</ansi>    <ansi fg="yellow">number</ansi>  - Base perception value
+  <ansi fg="cyan">perceptionmod</ansi> <ansi fg="yellow">number</ansi>  - Modifier applied to perception
+
+<ansi fg="yellow-bold">Char.Worth</ansi>
+Sent when gold, experience, or spendable points change.
+
+  <ansi fg="cyan">gold_carry</ansi>      <ansi fg="yellow">number</ansi>  - Gold currently carried
+  <ansi fg="cyan">gold_bank</ansi>       <ansi fg="yellow">number</ansi>  - Gold stored in the bank
+  <ansi fg="cyan">skillpoints</ansi>     <ansi fg="yellow">number</ansi>  - Unspent skill points available for training
+  <ansi fg="cyan">trainingpoints</ansi>  <ansi fg="yellow">number</ansi>  - Unspent training points
+  <ansi fg="cyan">xp</ansi>              <ansi fg="yellow">number</ansi>  - Total experience points earned
+  <ansi fg="cyan">tnl</ansi>             <ansi fg="yellow">number</ansi>  - Experience points needed to reach the next level
+
+<ansi fg="yellow-bold">Char.Affects</ansi>
+Sent when active buffs or debuffs change. The payload is an object keyed by effect name.
+
+  Each entry contains:
+  <ansi fg="cyan">name</ansi>          <ansi fg="green">string</ansi>                        - Display name of the effect
+  <ansi fg="cyan">description</ansi>   <ansi fg="green">string</ansi>                        - Short description of what the effect does
+  <ansi fg="cyan">type</ansi>          <ansi fg="green">string</ansi>                        - Source category (e.g. "spell", "item", "unknown")
+  <ansi fg="cyan">duration_max</ansi>  <ansi fg="yellow">number</ansi>                        - Total duration in seconds (-1 if permanent)
+  <ansi fg="cyan">duration_cur</ansi>  <ansi fg="yellow">number</ansi>                        - Remaining duration in seconds (-1 if permanent)
+  <ansi fg="cyan">affects</ansi>       <ansi fg="blue-bold">object</ansi>(<ansi fg="green">string</ansi>-><ansi fg="yellow">number</ansi>)  - Map of stat names to their modifier values
+
+<ansi fg="yellow-bold">Char.Inventory</ansi>
+Sent when items are picked up, dropped, or equipped. Contains backpack and worn sub-objects.
+
+  <ansi fg="cyan">Backpack.Summary.count</ansi>  <ansi fg="yellow">number</ansi>  - Number of items currently carried
+  <ansi fg="cyan">Backpack.Summary.max</ansi>    <ansi fg="yellow">number</ansi>  - Maximum carry capacity
+  <ansi fg="cyan">Backpack.items</ansi>          <ansi fg="magenta">array</ansi>   - List of carried items (see item structure below)
+  <ansi fg="cyan">Worn</ansi>                    <ansi fg="blue-bold">object</ansi>  - Equipment slots: weapon, offhand, head, neck, body,
+                                   belt, gloves, ring, legs, feet
+
+  Each item (in backpack or worn slot) contains:
+  <ansi fg="cyan">id</ansi>       <ansi fg="green">string</ansi>  - Shorthand item identifier
+  <ansi fg="cyan">name</ansi>     <ansi fg="green">string</ansi>  - Display name
+  <ansi fg="cyan">type</ansi>     <ansi fg="green">string</ansi>  - Item category (e.g. "weapon", "armor", "food")
+  <ansi fg="cyan">subtype</ansi>  <ansi fg="green">string</ansi>  - Item sub-category (e.g. "sword", "chest", "potion")
+  <ansi fg="cyan">uses</ansi>     <ansi fg="yellow">number</ansi>  - Remaining uses (0 for items without charges)
+  <ansi fg="cyan">details</ansi>  <ansi fg="magenta">array</ansi>   - Flags such as "cursed", "quest", "2-handed"
+
+  <ansi fg="white-bold">Char.Inventory.Backpack</ansi> and <ansi fg="white-bold">Char.Inventory.Backpack.Summary</ansi> can be requested independently.
+
+<ansi fg="yellow-bold">Char.Enemies</ansi>
+Sent when the list of combatants in the room changes.
+
+  Each entry contains:
+  <ansi fg="cyan">id</ansi>        <ansi fg="green">string</ansi>  - Shorthand mob instance identifier
+  <ansi fg="cyan">name</ansi>      <ansi fg="green">string</ansi>  - Mob name
+  <ansi fg="cyan">level</ansi>     <ansi fg="yellow">number</ansi>  - Mob level
+  <ansi fg="cyan">hp</ansi>        <ansi fg="yellow">number</ansi>  - Current hit points
+  <ansi fg="cyan">hp_max</ansi>    <ansi fg="yellow">number</ansi>  - Maximum hit points
+  <ansi fg="cyan">engaged</ansi>   <ansi fg="red">bool</ansi>    - True if this mob is the one currently attacking the player
+
+<ansi fg="yellow-bold">Char.Quests</ansi>
+Sent when quest progress changes. Secret quests are excluded.
+
+  Each entry contains:
+  <ansi fg="cyan">name</ansi>         <ansi fg="green">string</ansi>  - Quest name
+  <ansi fg="cyan">description</ansi>  <ansi fg="green">string</ansi>  - Description of the current quest step
+  <ansi fg="cyan">completion</ansi>   <ansi fg="yellow">number</ansi>  - Percentage complete (0-100)
+
+<ansi fg="yellow-bold">Char.Skills</ansi>
+Sent when skills are gained or trained.
+
+  Each entry contains:
+  <ansi fg="cyan">name</ansi>     <ansi fg="green">string</ansi>  - Skill name
+  <ansi fg="cyan">level</ansi>    <ansi fg="yellow">number</ansi>  - Current skill rank (1-4)
+  <ansi fg="cyan">maximum</ansi>  <ansi fg="red">bool</ansi>    - True if the skill is at maximum rank
+
+<ansi fg="yellow-bold">Char.Jobs</ansi>
+Sent when profession progress changes. Jobs are derived from skill rank combinations.
+
+  Each entry contains:
+  <ansi fg="cyan">name</ansi>         <ansi fg="green">string</ansi>  - Profession name
+  <ansi fg="cyan">proficiency</ansi>  <ansi fg="green">string</ansi>  - Proficiency title (e.g. "Apprentice", "Master")
+  <ansi fg="cyan">completion</ansi>   <ansi fg="yellow">number</ansi>  - Percentage progress toward the next proficiency tier (0-100)
+
+<ansi fg="yellow-bold">Char.Pets</ansi>
+Sent when the player's pet status changes.
+
+  Each entry contains:
+  <ansi fg="cyan">name</ansi>    <ansi fg="green">string</ansi>  - Pet's name
+  <ansi fg="cyan">type</ansi>    <ansi fg="green">string</ansi>  - Pet species or type
+  <ansi fg="cyan">hunger</ansi>  <ansi fg="green">string</ansi>  - Hunger state (e.g. "full")
+
+<ansi fg="magenta-bold">See also:</ansi> <ansi fg="command">help gmcp</ansi>, <ansi fg="command">help gmcp-room</ansi>, <ansi fg="command">help gmcp-party</ansi>

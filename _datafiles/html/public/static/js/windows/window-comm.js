@@ -63,6 +63,16 @@
             border-bottom: 2px solid #3ad4b8;
         }
 
+        @keyframes comm-tab-glow {
+            0%   { background: #0d2e28; color: #7ab8a0; }
+            50%  { background: #3ad4b8; color: #3ad4b8; }
+            100% { background: #0d2e28; color: #7ab8a0; }
+        }
+
+        #comm-output .tab-button.pending {
+            animation: comm-tab-glow 2s ease-in-out infinite;
+        }
+
         #comm-output .tab-contents {
             flex: 1;
             overflow: hidden;
@@ -160,6 +170,7 @@
                 panels.forEach(p => p.classList.remove('active'));
 
                 btn.classList.add('active');
+                btn.classList.remove('pending');
                 btn.dataset.unread = '0';
                 btn.textContent    = btn.dataset.label;
                 document.getElementById(target).classList.add('active');
@@ -211,6 +222,7 @@
         } else {
             tab.dataset.unread = String(parseInt(tab.dataset.unread) + 1);
             tab.textContent    = tab.dataset.label + '(' + tab.dataset.unread + ')';
+            tab.classList.add('pending');
         }
 
         const p = document.createElement('p');

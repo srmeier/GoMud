@@ -1,0 +1,28 @@
+<ansi fg="black-bold">.:</ansi> <ansi fg="magenta">Help for </ansi><ansi fg="command">gmcp-party</ansi>
+
+The <ansi fg="white-bold">Party</ansi> GMCP payload is sent to all party members whenever the party composition changes. The <ansi fg="white-bold">Party.Vitals</ansi> sub-payload is sent more frequently as members move or take damage.
+
+Players who are not in a party receive an empty <ansi fg="white-bold">Party</ansi> payload.
+
+<ansi fg="yellow-bold">Party</ansi>
+Full party state, sent on membership changes.
+
+  <ansi fg="cyan">Leader</ansi>   <ansi fg="green">string</ansi>  - Name of the party leader ("None" if no leader)
+  <ansi fg="cyan">Members</ansi>  <ansi fg="magenta">array</ansi>   - Players and charmed companions currently in the party
+  <ansi fg="cyan">Invited</ansi>  <ansi fg="magenta">array</ansi>   - Players who have been invited but have not yet joined
+  <ansi fg="cyan">Vitals</ansi>   <ansi fg="blue-bold">object</ansi>  - Keyed by character name (see Party.Vitals below)
+
+  Each entry in <ansi fg="white-bold">Members</ansi> and <ansi fg="white-bold">Invited</ansi> contains:
+  <ansi fg="cyan">name</ansi>      <ansi fg="green">string</ansi>  - Character or mob name
+  <ansi fg="cyan">status</ansi>    <ansi fg="green">string</ansi>  - Membership state: "In Party", "Invited", or a charm indicator
+  <ansi fg="cyan">position</ansi>  <ansi fg="green">string</ansi>  - Tactical rank in the party (e.g. "frontrank", "backrank") or "-" for charmed mobs
+
+<ansi fg="yellow-bold">Party.Vitals</ansi>
+Lightweight update sent whenever a member moves or their health changes. The payload is an object keyed by character name.
+
+  Each entry contains:
+  <ansi fg="cyan">level</ansi>     <ansi fg="yellow">number</ansi>  - Character or mob level
+  <ansi fg="cyan">health</ansi>    <ansi fg="yellow">number</ansi>  - Current health as a percentage (0-100)
+  <ansi fg="cyan">location</ansi>  <ansi fg="green">string</ansi>  - Title of the room the member is currently in
+
+<ansi fg="magenta-bold">See also:</ansi> <ansi fg="command">help gmcp</ansi>, <ansi fg="command">help gmcp-char</ansi>

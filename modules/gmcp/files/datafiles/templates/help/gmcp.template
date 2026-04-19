@@ -1,0 +1,43 @@
+<ansi fg="black-bold">.:</ansi> <ansi fg="magenta">Help for </ansi><ansi fg="command">gmcp</ansi>
+
+GMCP (Generic MUD Communication Protocol) is a telnet sub-negotiation protocol that allows the server to send structured JSON data to your client alongside normal text output. Clients that support GMCP can use this data to build custom UIs, maps, and status displays.
+
+The server sends GMCP data automatically as game state changes. Clients may also request specific payloads by name.
+
+<ansi fg="yellow-bold">Top-Level Payloads:</ansi>
+
+  <ansi fg="white-bold">Char</ansi>         - Character information, stats, inventory, and status
+                 See <ansi fg="command">help gmcp-char</ansi>
+
+  <ansi fg="white-bold">Comm.Channel</ansi> - In-game communication messages (say, party, broadcast, whisper)
+                 See <ansi fg="command">help gmcp-comm</ansi>
+
+  <ansi fg="white-bold">Game</ansi>         - Server information and online player list
+                 See <ansi fg="command">help gmcp-game</ansi>
+
+  <ansi fg="white-bold">Gametime</ansi>     - In-game calendar and time-of-day data
+                 See <ansi fg="command">help gmcp-gametime</ansi>
+
+  <ansi fg="white-bold">Party</ansi>        - Party membership, roles, and member vitals
+                 See <ansi fg="command">help gmcp-party</ansi>
+
+  <ansi fg="white-bold">Room.Info</ansi>    - Current room details, exits, and contents
+                 See <ansi fg="command">help gmcp-room</ansi>
+
+  <ansi fg="white-bold">World.Map</ansi>    - Snapshot of all rooms the player has visited
+                 See <ansi fg="command">help gmcp-world</ansi>
+
+  <ansi fg="white-bold">Help</ansi>         - Help content delivered over GMCP (used by the web client)
+                 See <ansi fg="command">help gmcp-help</ansi>
+
+  <ansi fg="white-bold">Client.GUI</ansi>   - Mudlet UI package installation and update instructions
+  <ansi fg="white-bold">Client.Map</ansi>   - Mudlet mapper package URL
+  <ansi fg="white-bold">External.Discord.Info</ansi>   - Discord Rich Presence application identity
+  <ansi fg="white-bold">External.Discord.Status</ansi> - Discord Rich Presence status update
+
+<ansi fg="yellow-bold">Notes:</ansi>
+- GMCP is negotiated automatically over telnet. Web client connections have GMCP enabled by default.
+- Clients declare which modules they support via <ansi fg="white-bold">Core.Supports.Set</ansi>.
+- All payloads are JSON objects unless otherwise noted.
+
+<ansi fg="magenta-bold">See also:</ansi> <ansi fg="command">help client</ansi>, <ansi fg="command">help gmcp-char</ansi>, <ansi fg="command">help gmcp-room</ansi>, <ansi fg="command">help gmcp-party</ansi>

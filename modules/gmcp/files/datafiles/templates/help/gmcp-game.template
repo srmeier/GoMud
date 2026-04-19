@@ -1,0 +1,17 @@
+<ansi fg="black-bold">.:</ansi> <ansi fg="magenta">Help for </ansi><ansi fg="command">gmcp-game</ansi>
+
+The <ansi fg="white-bold">Game</ansi> GMCP payload is sent to all online players whenever someone connects or disconnects. It combines server identity information with the current online player list into a single object.
+
+<ansi fg="yellow-bold">Game</ansi>
+
+  <ansi fg="cyan">Info.logintime</ansi>  <ansi fg="green">string</ansi>  - The time the receiving player logged in, formatted per the server's configured time format
+  <ansi fg="cyan">Info.name</ansi>       <ansi fg="green">string</ansi>  - The name of the MUD server
+
+  <ansi fg="cyan">Who.Players</ansi>     <ansi fg="magenta">array</ansi>   - List of currently online players
+
+  Each entry in <ansi fg="white-bold">Who.Players</ansi> contains:
+  <ansi fg="cyan">name</ansi>   <ansi fg="green">string</ansi>  - Character name
+  <ansi fg="cyan">level</ansi>  <ansi fg="yellow">number</ansi>  - Character level
+  <ansi fg="cyan">title</ansi>  <ansi fg="green">string</ansi>  - Account role or title (e.g. "player", "admin")
+
+<ansi fg="magenta-bold">See also:</ansi> <ansi fg="command">help gmcp</ansi>, <ansi fg="command">help gmcp-gametime</ansi>

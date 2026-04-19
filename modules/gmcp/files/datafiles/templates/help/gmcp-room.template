@@ -1,0 +1,71 @@
+<ansi fg="black-bold">.:</ansi> <ansi fg="magenta">Help for </ansi><ansi fg="command">gmcp-room</ansi>
+
+The <ansi fg="white-bold">Room.Info</ansi> GMCP payload is sent whenever the player enters a new room. Sub-payloads for room contents are updated independently as players, mobs, and items change.
+
+Requesting <ansi fg="white-bold">Room.Info</ansi> returns the complete payload. Sub-payloads such as <ansi fg="white-bold">Room.Info.Contents.Players</ansi> can be requested or received independently.
+
+<ansi fg="yellow-bold">Room.Info</ansi>
+Full room state, sent on room entry.
+
+  <ansi fg="cyan">num</ansi>          <ansi fg="yellow">number</ansi>  - Unique room ID
+  <ansi fg="cyan">name</ansi>         <ansi fg="green">string</ansi>  - Room title
+  <ansi fg="cyan">area</ansi>         <ansi fg="green">string</ansi>  - Zone/area name the room belongs to
+  <ansi fg="cyan">environment</ansi>  <ansi fg="green">string</ansi>  - Biome name (e.g. "Forest", "Cave", "City")
+  <ansi fg="cyan">coords</ansi>       <ansi fg="green">string</ansi>  - Comma-separated string: "ZoneName, x, y, z"
+  <ansi fg="cyan">mapsymbol</ansi>    <ansi fg="green">string</ansi>  - Single character used to represent this room on ASCII maps
+  <ansi fg="cyan">maplegend</ansi>    <ansi fg="green">string</ansi>  - Label describing the map symbol
+  <ansi fg="cyan">exits</ansi>        <ansi fg="blue-bold">object</ansi>  - Map of exit direction to destination room ID (number)
+  <ansi fg="cyan">exitsv2</ansi>      <ansi fg="blue-bold">object</ansi>  - Extended exit data keyed by direction (see below)
+  <ansi fg="cyan">details</ansi>      <ansi fg="magenta">array</ansi>   - Room feature flags. Possible values:
+                    "trainer"    - Room has a skill trainer
+                    "bank"       - Room contains a bank
+                    "storage"    - Room has player storage
+                    "character"  - Character creation/management room
+                    "pvp"        - PvP combat is enabled
+                    "ephemeral"  - Dynamically generated room (not persistent)
+                    "root"       - Entry room for the zone
+  <ansi fg="cyan">Contents</ansi>     <ansi fg="blue-bold">object</ansi>  - Players, NPCs, items, and containers present (see below)
+
+  Each entry in <ansi fg="white-bold">exitsv2</ansi> contains:
+  <ansi fg="cyan">num</ansi>      <ansi fg="yellow">number</ansi>  - Destination room ID
+  <ansi fg="cyan">dx</ansi>       <ansi fg="yellow">number</ansi>  - X-axis delta for mapping (-1, 0, or 1)
+  <ansi fg="cyan">dy</ansi>       <ansi fg="yellow">number</ansi>  - Y-axis delta for mapping (-1, 0, or 1)
+  <ansi fg="cyan">dz</ansi>       <ansi fg="yellow">number</ansi>  - Z-axis delta for mapping (-1, 0, or 1)
+  <ansi fg="cyan">details</ansi>  <ansi fg="magenta">array</ansi>   - Exit flags: "secret", "locked", "player_has_key", "player_has_pick_combo"
+
+<ansi fg="yellow-bold">Room.Info.Contents</ansi>
+Sent as part of Room.Info or independently when contents change.
+
+  <ansi fg="cyan">Players</ansi>     <ansi fg="magenta">array</ansi>  - Other players visible in the room (excludes the receiving player)
+  <ansi fg="cyan">Npcs</ansi>        <ansi fg="magenta">array</ansi>  - NPCs/mobs visible in the room
+  <ansi fg="cyan">Items</ansi>       <ansi fg="magenta">array</ansi>  - Items on the ground
+  <ansi fg="cyan">Containers</ansi>  <ansi fg="magenta">array</ansi>  - Containers present in the room
+
+  Each entry in <ansi fg="white-bold">Players</ansi> and <ansi fg="white-bold">Npcs</ansi> contains:
+  <ansi fg="cyan">id</ansi>          <ansi fg="green">string</ansi>  - Shorthand identifier for the character or mob instance
+  <ansi fg="cyan">name</ansi>        <ansi fg="green">string</ansi>  - Display name
+  <ansi fg="cyan">adjectives</ansi>  <ansi fg="magenta">array</ansi>   - Descriptive adjectives (e.g. race, size, condition)
+  <ansi fg="cyan">aggro</ansi>       <ansi fg="red">bool</ansi>    - True if currently engaged in combat
+  <ansi fg="cyan">quest_flag</ansi>  <ansi fg="red">bool</ansi>    - True if this NPC is relevant to one of the player's quests
+
+  Each entry in <ansi fg="white-bold">Items</ansi> contains:
+  <ansi fg="cyan">id</ansi>          <ansi fg="green">string</ansi>  - Shorthand item identifier
+  <ansi fg="cyan">name</ansi>        <ansi fg="green">string</ansi>  - Display name
+  <ansi fg="cyan">quest_flag</ansi>  <ansi fg="red">bool</ansi>    - True if this item is a quest item
+
+  Each entry in <ansi fg="white-bold">Containers</ansi> contains:
+  <ansi fg="cyan">name</ansi>           <ansi fg="green">string</ansi>  - Container name
+  <ansi fg="cyan">locked</ansi>         <ansi fg="red">bool</ansi>    - True if the container is locked
+  <ansi fg="cyan">haskey</ansi>         <ansi fg="red">bool</ansi>    - True if the player has a key for this container
+  <ansi fg="cyan">haspickcombo</ansi>   <ansi fg="red">bool</ansi>    - True if the player knows the pick combination for this lock
+  <ansi fg="cyan">usable</ansi>         <ansi fg="red">bool</ansi>    - True if the container can be used as a crafting station
+
+<ansi fg="yellow-bold">Notes:</ansi>
+- Hidden players and mobs are excluded from Contents.
+- Secret exits the player has not yet discovered are excluded from exits and exitsv2.
+- <ansi fg="white-bold">Room.Info.Contents.Players</ansi>, <ansi fg="white-bold">Room.Info.Contents.Npcs</ansi>, <ansi fg="white-bold">Room.Info.Contents.Items</ansi>,
+  and <ansi fg="white-bold">Room.Info.Contents.Containers</ansi> can each be requested independently.
+- When a player leaves a room, a bare <ansi fg="white-bold">Room.RemovePlayer "Name"</ansi> message is sent to
+  remaining players instead of a full Contents update.
+
+<ansi fg="magenta-bold">See also:</ansi> <ansi fg="command">help gmcp</ansi>, <ansi fg="command">help gmcp-world</ansi>, <ansi fg="command">help gmcp-char</ansi>

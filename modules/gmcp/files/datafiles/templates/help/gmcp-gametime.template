@@ -1,0 +1,20 @@
+<ansi fg="black-bold">.:</ansi> <ansi fg="magenta">Help for </ansi><ansi fg="command">gmcp-gametime</ansi>
+
+The <ansi fg="white-bold">Gametime</ansi> GMCP payload is sent to all online players every game round, providing the current in-game calendar date and time.
+
+<ansi fg="yellow-bold">Gametime</ansi>
+
+  <ansi fg="cyan">hour</ansi>         <ansi fg="yellow">number</ansi>  - Current in-game hour (12-hour format)
+  <ansi fg="cyan">hour24</ansi>       <ansi fg="yellow">number</ansi>  - Current in-game hour (24-hour format)
+  <ansi fg="cyan">minute</ansi>       <ansi fg="yellow">number</ansi>  - Current in-game minute
+  <ansi fg="cyan">ampm</ansi>         <ansi fg="green">string</ansi>  - "am" or "pm"
+  <ansi fg="cyan">day</ansi>          <ansi fg="yellow">number</ansi>  - Current day of the month
+  <ansi fg="cyan">month</ansi>        <ansi fg="yellow">number</ansi>  - Current month number
+  <ansi fg="cyan">month_name</ansi>   <ansi fg="green">string</ansi>  - Name of the current in-game month
+  <ansi fg="cyan">year</ansi>         <ansi fg="yellow">number</ansi>  - Current in-game year
+  <ansi fg="cyan">zodiac</ansi>       <ansi fg="green">string</ansi>  - Zodiac sign associated with the current year
+  <ansi fg="cyan">night</ansi>        <ansi fg="red">bool</ansi>    - True if it is currently nighttime in-game
+  <ansi fg="cyan">day_start</ansi>    <ansi fg="yellow">number</ansi>  - The hour (24h) at which daytime begins
+  <ansi fg="cyan">night_start</ansi>  <ansi fg="yellow">number</ansi>  - The hour (24h) at which nighttime begins
+
+<ansi fg="magenta-bold">See also:</ansi> <ansi fg="command">help gmcp</ansi>, <ansi fg="command">help gmcp-game</ansi>
