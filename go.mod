@@ -1,6 +1,6 @@
 module github.com/GoMudEngine/GoMud
 
-go 1.24.0
+go 1.26.2
 
 require (
 	github.com/dop251/goja v0.0.0-20231027120936-b396bb4c349d

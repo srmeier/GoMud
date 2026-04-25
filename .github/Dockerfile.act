@@ -1,4 +1,4 @@
-FROM golang:1.25.0-bookworm
+FROM golang:1.26.2-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOBIN=/usr/local/bin
