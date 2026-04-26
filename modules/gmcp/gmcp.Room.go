@@ -500,7 +500,7 @@ func (g *GMCPRoomModule) GetRoomNode(user *users.UserRecord, gmcpModule string) 
 			payload.Details = append(payload.Details, `pvp`)
 		}
 
-		for _, tag := range room.Tags {
+		for _, tag := range room.GetTags() {
 			payload.Details = append(payload.Details, tag)
 		}
 

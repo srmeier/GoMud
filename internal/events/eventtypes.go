@@ -401,3 +401,19 @@ type AggroChanged struct {
 }
 
 func (a AggroChanged) Type() string { return `AggroChanged` }
+
+type CLIRequest struct {
+	UserId       int
+	ConnectionId uint64
+	Command      string
+	Args         []string
+}
+
+func (c CLIRequest) Type() string { return `CLIRequest` }
+
+// If a potentially fire-starting event occured in this room
+type FireBlaze struct {
+	RoomId int
+}
+
+func (c FireBlaze) Type() string { return `FireBlaze` }

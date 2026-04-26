@@ -363,12 +363,7 @@ func (r ScriptRoom) RemoveTemporaryExit(exitNameSimple string, exitNameFancy str
 }
 
 func (r ScriptRoom) HasTag(tag string) bool {
-	for _, t := range r.roomRecord.Tags {
-		if t == tag {
-			return true
-		}
-	}
-	return false
+	return r.roomRecord.HasTag(tag)
 }
 
 func (r ScriptRoom) SetTag(tag string) {

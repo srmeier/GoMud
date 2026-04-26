@@ -1,0 +1,15 @@
+The <ansi fg="command">cli</ansi> command launches an interactive CLI tool within your session.
+
+<ansi fg="command">cli &lt;tool&gt; [args...]</ansi>
+
+<ansi fg="yellow">Examples:</ansi>
+  <ansi fg="command">cli nano rooms/1.yaml</ansi>    - Edit a datafile with nano
+  <ansi fg="command">cli less items/1.yaml</ansi>    - View a datafile with less
+  <ansi fg="command">cli htop</ansi>                 - Launch htop
+  <ansi fg="command">cli vim rooms/1.yaml</ansi>     - Edit a datafile with vim
+
+<ansi fg="yellow">Notes:</ansi>
+  File paths are relative to the server datafiles directory.
+  Only allowed tools and paths may be used (see server config).
+  Not available over WebSocket connections.
+  Press the tool's normal exit key to return to the game.

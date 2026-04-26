@@ -34,6 +34,8 @@ var (
 	// Channel to send a shutdown signal to
 	//
 	shutdownChannel chan os.Signal // channel to receive shutdown signals
+
+	windowChangeListeners []func(connId ConnectionId, cols, rows uint32)
 )
 
 func SignalShutdown(s os.Signal) {
@@ -208,6 +210,45 @@ func Broadcast(colorizedText []byte, skipConnectionIds ...ConnectionId) []Connec
 	}
 
 	return sentToIds
+}
+
+func RegisterWindowChangeListener(f func(connId ConnectionId, cols, rows uint32)) {
+	lock.Lock()
+	defer lock.Unlock()
+	windowChangeListeners = append(windowChangeListeners, f)
+}
+
+func NotifyWindowChange(connId ConnectionId, cols, rows uint32) {
+	lock.RLock()
+	listeners := make([]func(ConnectionId, uint32, uint32), len(windowChangeListeners))
+	copy(listeners, windowChangeListeners)
+	lock.RUnlock()
+
+	for _, f := range listeners {
+		f(connId, cols, rows)
+	}
+}
+
+func SendRawTo(b []byte, ids ...ConnectionId) {
+	lock.Lock()
+
+	removeIds := []ConnectionId{}
+
+	for _, id := range ids {
+		if cd, ok := netConnections[id]; ok {
+			if _, err := cd.WriteRaw(b); err != nil {
+				mudlog.Warn("SendRawTo()", "connectionId", id, "remoteAddr", cd.RemoteAddr().String(), "error", err)
+				removeIds = append(removeIds, id)
+				continue
+			}
+		}
+	}
+
+	lock.Unlock()
+
+	for _, id := range removeIds {
+		Remove(id)
+	}
 }
 
 func SendTo(b []byte, ids ...ConnectionId) {

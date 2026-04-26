@@ -3,10 +3,6 @@ package gambling
 import (
 	"embed"
 	"fmt"
-	"io/fs"
-	"strings"
-	"time"
-
 	"github.com/GoMudEngine/GoMud/internal/events"
 	"github.com/GoMudEngine/GoMud/internal/items"
 	"github.com/GoMudEngine/GoMud/internal/mudlog"
@@ -14,7 +10,8 @@ import (
 	"github.com/GoMudEngine/GoMud/internal/rooms"
 	"github.com/GoMudEngine/GoMud/internal/users"
 	"github.com/GoMudEngine/GoMud/internal/util"
-	lru "github.com/hashicorp/golang-lru/v2"
+	"io/fs"
+	"strings"
 )
 
 var (
@@ -26,11 +23,9 @@ const defaultCost = 10
 
 func init() {
 
-	roomTagCache, _ := lru.New[int, roomTagEntry](64)
 	g := &GamblingModule{
-		plug:         plugins.New(`gambling`, `1.0`),
-		state:        make(SlotState),
-		roomTagCache: roomTagCache,
+		plug:  plugins.New(`gambling`, `1.0`),
+		state: make(SlotState),
 	}
 
 	if err := g.plug.AttachFileSystem(files); err != nil {
@@ -119,14 +114,12 @@ func (g *GamblingModule) onLookInput(e events.Event) events.ListenerReturn {
 		return events.Continue
 	}
 
-	hasSlots, hasClaw := g.cachedRoomTags(room)
-
-	if _, c := util.FindMatchIn(target, `slot machine`, `slots`, `slot`); c != `` && hasSlots {
+	if _, c := util.FindMatchIn(target, `slot machine`, `slots`, `slot`); c != `` && roomHasSlots(room) {
 		g.sendLookDescription(user, room, `slot machine`, g.slotMachineNounDesc(room.RoomId))
 		return events.Cancel
 	}
 
-	if _, c := util.FindMatchIn(target, `claw machine`, `claw`); c != `` && hasClaw {
+	if _, c := util.FindMatchIn(target, `claw machine`, `claw`); c != `` && roomHasClaw(room) {
 		g.sendLookDescription(user, room, `claw machine`, g.clawMachineNounDesc())
 		return events.Cancel
 	}
@@ -152,20 +145,10 @@ func (g *GamblingModule) sendLookDescription(user *users.UserRecord, room *rooms
 	)
 }
 
-const roomTagCacheTTL = 30 * time.Second
-
-// roomTagEntry is a cached result of the tag checks for one room.
-type roomTagEntry struct {
-	hasSlots bool
-	hasClaw  bool
-	expiry   time.Time
-}
-
 // GamblingModule holds module-level state for the gambling plugin.
 type GamblingModule struct {
-	plug         *plugins.Plugin
-	state        SlotState
-	roomTagCache *lru.Cache[int, roomTagEntry]
+	plug  *plugins.Plugin
+	state SlotState
 }
 
 func (g *GamblingModule) load() {
@@ -174,22 +157,6 @@ func (g *GamblingModule) load() {
 
 func (g *GamblingModule) save() {
 	g.plug.WriteStruct(`slotstate`, g.state)
-}
-
-// cachedRoomTags returns the cached slot/claw tag results for the room,
-// recomputing them if the cache entry is absent or expired.
-func (g *GamblingModule) cachedRoomTags(r *rooms.Room) (hasSlots bool, hasClaw bool) {
-	if entry, ok := g.roomTagCache.Get(r.RoomId); ok && time.Now().Before(entry.expiry) {
-		return entry.hasSlots, entry.hasClaw
-	}
-	hasSlots = roomHasSlots(r)
-	hasClaw = roomHasClaw(r)
-	g.roomTagCache.Add(r.RoomId, roomTagEntry{
-		hasSlots: hasSlots,
-		hasClaw:  hasClaw,
-		expiry:   time.Now().Add(roomTagCacheTTL),
-	})
-	return hasSlots, hasClaw
 }
 
 // onRoomLook injects a slot machine alert when the room has the slots tag.
@@ -212,8 +179,7 @@ func (g *GamblingModule) playCommand(rest string, user *users.UserRecord, room *
 	arg := strings.TrimSpace(rest)
 
 	if m, c := util.FindMatchIn(arg, `slot machine`, `slots`, `slot`); m != `` || c != `` {
-		hasSlots, _ := g.cachedRoomTags(room)
-		if !hasSlots {
+		if !roomHasSlots(room) {
 			user.SendText(`There is no slot machine here.`)
 			return true, nil
 		}
@@ -222,8 +188,7 @@ func (g *GamblingModule) playCommand(rest string, user *users.UserRecord, room *
 	}
 
 	if m, c := util.FindMatchIn(arg, `claw machine`, `claw`); m != `` || c != `` {
-		_, hasClaw := g.cachedRoomTags(room)
-		if !hasClaw {
+		if !roomHasClaw(room) {
 			user.SendText(`There is no claw machine here.`)
 			return true, nil
 		}

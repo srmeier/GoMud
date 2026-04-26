@@ -80,12 +80,7 @@ func (g *GamblingModule) buildClawPrizes() []clawPrize {
 
 // roomHasClaw returns true when the room carries a "claw machine" tag.
 func roomHasClaw(r *rooms.Room) bool {
-	for _, t := range r.Tags {
-		if strings.ToLower(t) == `claw machine` {
-			return true
-		}
-	}
-	return false
+	return r.HasTag(`claw machine`)
 }
 
 // clawPrizeWeight returns the configured weight for a prize, falling back to the default.

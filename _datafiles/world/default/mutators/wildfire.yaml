@@ -2,12 +2,16 @@ mutatorid: wildfire
 namemodifier:
   behavior: replace
   colorpattern: flame
-descriptionmodifier: 
+descriptionmodifier:
   behavior: replace
   colorpattern: flame
-alertmodifier: 
+alertmodifier:
+  behavior: replace
   text: '!!!                A wildfire is burning here!                !!!'
   colorpattern: flame
+decayintoid: wildfire-scorched
+playerbuffids:
+- 22
+mobbuffids:
+- 22
 decayrate: 10 minutes
-playerbuffids: [22]
-mobbuffids: [22]

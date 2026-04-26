@@ -22,6 +22,7 @@ require (
 )
 
 require (
+	github.com/creack/pty v1.1.24
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/mattn/go-runewidth v0.0.19
 	github.com/nicksnyder/go-i18n/v2 v2.6.0

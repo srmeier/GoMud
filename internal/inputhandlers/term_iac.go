@@ -139,6 +139,7 @@ func TelnetIACHandler(clientInput *connections.ClientInput, sharedState map[stri
 					cs.Display.ScreenWidth = uint32(w)
 					cs.Display.ScreenHeight = uint32(h)
 					connections.OverwriteClientSettings(clientInput.ConnectionId, cs)
+					connections.NotifyWindowChange(clientInput.ConnectionId, uint32(w), uint32(h))
 
 				}
 

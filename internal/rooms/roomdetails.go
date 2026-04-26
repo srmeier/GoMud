@@ -91,7 +91,7 @@ func GetDetails(r *Room, user *users.UserRecord, tinymap ...[]string) RoomTempla
 		IsNight:        gametime.IsNight(),
 		TrackingString: ``,
 		ShowPvp:        showPvp,
-		Tags:           append([]string{}, r.Tags...),
+		Tags:           r.GetTags(),
 	}
 
 	//

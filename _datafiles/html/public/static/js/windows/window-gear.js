@@ -119,6 +119,8 @@
         }
 
         .gw-equip-name.empty  { color: var(--t-text-dim); font-style: italic; }
+        .gw-equip-row.empty  { cursor: default; }
+        .gw-equip-row.empty:hover { background: transparent; }
         .gw-equip-name.cursed { color: var(--t-cursed-text); }
         .gw-equip-name.quest  { color: var(--t-quest-text); }
 
@@ -573,14 +575,16 @@
             const badgeEl = document.getElementById('gw-eqb-'   + slot.key);
             if (!rowEl || !nameEl || !badgeEl) { return; }
 
-            if (!item || !item.name) {
-                nameEl.textContent = 'empty';
+            if (!item || !item.name || item.name === '-nothing-') {
+                nameEl.textContent = item && item.name === '-nothing-' ? '-nothing-' : 'empty';
                 nameEl.className   = 'gw-equip-name empty';
                 badgeEl.style.display = 'none';
+                rowEl.classList.add('empty');
                 rowItemData.delete(rowEl);
                 return;
             }
 
+            rowEl.classList.remove('empty');
             rowItemData.set(rowEl, item);
 
             const isCursed = item.details && item.details.includes('cursed');

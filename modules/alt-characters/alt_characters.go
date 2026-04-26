@@ -259,12 +259,7 @@ func (m *AltCharactersModule) onRoomLook(d rooms.RoomTemplateDetails) rooms.Room
 }
 
 func roomIsCharacter(room *rooms.Room) bool {
-	for _, t := range room.Tags {
-		if strings.EqualFold(t, characterTag) {
-			return true
-		}
-	}
-	return false
+	return room.HasTag(characterTag)
 }
 
 // ---------------------------------------------------------------------------

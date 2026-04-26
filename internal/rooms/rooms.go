@@ -2276,6 +2276,34 @@ func (r *Room) ActiveMutators(yield func(mutators.Mutator) bool) {
 	}
 }
 
+func (r *Room) HasTag(tag string) bool {
+	for _, t := range r.Tags {
+		if strings.EqualFold(t, tag) {
+			return true
+		}
+	}
+	for mut := range r.ActiveMutators {
+		if spec := mut.GetSpec(); spec != nil {
+			for _, t := range spec.Tags {
+				if strings.EqualFold(t, tag) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func (r *Room) GetTags() []string {
+	tags := append([]string{}, r.Tags...)
+	for mut := range r.ActiveMutators {
+		if spec := mut.GetSpec(); spec != nil {
+			tags = append(tags, spec.Tags...)
+		}
+	}
+	return tags
+}
+
 // Returns true if Pvp is allowed in this room
 func (r *Room) IsPvp() bool {
 	roomPvp := r.Pvp

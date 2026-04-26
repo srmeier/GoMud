@@ -125,6 +125,7 @@ type ConnectionDetails struct {
 	inputHandlerNames []string
 	inputHandlers     []InputHandler
 	inputDisabled     bool
+	outputSuppressed  bool
 	clientSettings    ClientSettings
 	heartbeat         *heartbeatManager
 }
@@ -199,6 +200,14 @@ func (cd *ConnectionDetails) RemoveInputHandler(name string) {
 
 }
 
+func (cd *ConnectionDetails) PrependInputHandler(name string, newInputHandler InputHandler) {
+	cd.handlerMutex.Lock()
+	defer cd.handlerMutex.Unlock()
+
+	cd.inputHandlerNames = append([]string{name}, cd.inputHandlerNames...)
+	cd.inputHandlers = append([]InputHandler{newInputHandler}, cd.inputHandlers...)
+}
+
 func (cd *ConnectionDetails) AddInputHandler(name string, newInputHandler InputHandler, after ...string) {
 	cd.handlerMutex.Lock()
 	defer cd.handlerMutex.Unlock()
@@ -217,7 +226,24 @@ func (cd *ConnectionDetails) AddInputHandler(name string, newInputHandler InputH
 	cd.inputHandlers = append(cd.inputHandlers, newInputHandler)
 }
 
+func (cd *ConnectionDetails) WriteRaw(p []byte) (n int, err error) {
+	if len(p) == 0 {
+		return 0, nil
+	}
+	if cd.sshChannel != nil {
+		return cd.sshChannel.Write(p)
+	}
+	if cd.wsConn != nil {
+		return 0, errors.New("raw write not supported on WebSocket")
+	}
+	return cd.conn.Write(p)
+}
+
 func (cd *ConnectionDetails) Write(p []byte) (n int, err error) {
+
+	if cd.outputSuppressed {
+		return len(p), nil
+	}
 
 	p = []byte(strings.ReplaceAll(string(p), "\n", "\r\n"))
 
@@ -316,6 +342,13 @@ func (cd *ConnectionDetails) InputDisabled(setTo ...bool) bool {
 		cd.inputDisabled = setTo[0]
 	}
 	return cd.inputDisabled
+}
+
+func (cd *ConnectionDetails) OutputSuppressed(setTo ...bool) bool {
+	if len(setTo) > 0 {
+		cd.outputSuppressed = setTo[0]
+	}
+	return cd.outputSuppressed
 }
 
 func NewConnectionDetails(connId ConnectionId, c net.Conn, wsC *websocket.Conn, config *HeartbeatConfig) *ConnectionDetails {

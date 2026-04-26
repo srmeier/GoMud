@@ -1,8 +1,6 @@
 package usercommands
 
 import (
-	"strings"
-
 	"github.com/GoMudEngine/GoMud/internal/events"
 	"github.com/GoMudEngine/GoMud/internal/rooms"
 	"github.com/GoMudEngine/GoMud/internal/users"
@@ -31,13 +29,11 @@ func Default(rest string, user *users.UserRecord, room *rooms.Room, flags events
 	}
 
 	// If a storage location, "storage"
-	for _, t := range room.Tags {
-		if strings.EqualFold(t, `storage`) {
-			// Dispatch via the event queue so we do not create an init cycle
-			// with the storage module's RegisterCommand call.
-			user.Command(`storage`)
-			return true, nil
-		}
+	if room.HasTag(`storage`) {
+		// Dispatch via the event queue so we do not create an init cycle
+		// with the storage module's RegisterCommand call.
+		user.Command(`storage`)
+		return true, nil
 	}
 
 	// Default to "look"

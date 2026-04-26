@@ -1,0 +1,10 @@
+Enabled: true
+AllowedTools:
+  - nano
+  - vim
+  - less
+  - htop
+  - top
+  - ls
+AllowedPaths:
+  - "/*"

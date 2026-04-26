@@ -140,6 +140,41 @@
     }
     .btn-icon:hover { color: #c00; }
 
+    /* tags */
+    .tag-wrap { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; }
+    .tag-chip {
+        display: inline-flex; align-items: center; gap: 0.25rem;
+        background: #e8eaf6; color: #3949ab; border-radius: 10px;
+        padding: 0.15rem 0.5rem; font-size: 0.78rem; cursor: default;
+    }
+    .tag-chip button { background: none; border: none; cursor: pointer; color: #3949ab; font-size: 0.82rem; line-height: 1; padding: 0; }
+    .tag-chip button:hover { color: #c00; }
+
+    /* tag picker */
+    .tag-picker-wrap { position: relative; display: inline-block; }
+    .tag-picker-dropdown {
+        display: none; position: absolute; top: 100%; left: 0; z-index: 200;
+        background: #fff; border: 1px solid #ccc; border-radius: 6px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12); min-width: 260px; max-height: 320px;
+        overflow-y: auto; padding: 0.4rem 0;
+    }
+    .tag-picker-dropdown.open { display: block; }
+    .tag-picker-search { width: calc(100% - 1rem); margin: 0.3rem 0.5rem; padding: 0.3rem 0.5rem; border: 1px solid #ccc; border-radius: 4px; font-size: 0.82rem; }
+    .tag-picker-group { padding: 0.25rem 0.5rem 0; font-size: 0.7rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tag-picker-item {
+        padding: 0.3rem 0.75rem; cursor: pointer; font-size: 0.82rem; display: flex; align-items: center; gap: 0.4rem;
+    }
+    .tag-picker-item:hover { background: #f0f4ff; }
+    .tag-picker-item.selected { color: #3949ab; font-weight: 600; }
+    .tag-picker-item.selected::before { content: "\2713"; font-size: 0.75rem; }
+    .tag-picker-item:not(.selected)::before { content: ""; display: inline-block; width: 0.9em; }
+    .tag-picker-empty { padding: 0.75rem; text-align: center; color: #aaa; font-size: 0.82rem; }
+    .btn-tag-picker {
+        padding: 0.3rem 0.6rem; border: 1px dashed #7986cb; border-radius: 4px;
+        background: none; cursor: pointer; font-size: 0.8rem; color: #3949ab;
+    }
+    .btn-tag-picker:hover { background: #e8eaf6; }
+
     /* action bar */
     .action-bar { display: flex; gap: 0.6rem; margin-top: 1.25rem; align-items: center; flex-wrap: wrap; }
     .btn { padding: 0.45rem 1.1rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.875rem; font-weight: 600; }
@@ -329,6 +364,26 @@
                     <div class="field-hint">Overrides the room's PvP setting while the mutator is active. Only visible to players when global PvP is set to "limited" mode. Multiple mutators on the same room apply in order &mdash; the last one wins.</div>
                 </div>
 
+                <div class="section-title">Tags</div>
+
+                <div class="field span2">
+                    <label>Tags</label>
+                    <div class="tag-wrap" id="tags-list"></div>
+                    <div style="margin-top:0.4rem; display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap;">
+                        <div class="tag-picker-wrap">
+                            <button class="btn-tag-picker" onclick="toggleTagPicker(event)">+ Pick Tag</button>
+                            <div class="tag-picker-dropdown" id="tag-picker-dropdown">
+                                <input type="search" class="tag-picker-search" id="tag-picker-search" placeholder="Filter tags..." oninput="filterTagPicker()" />
+                                <div id="tag-picker-list"></div>
+                            </div>
+                        </div>
+                        <span style="font-size:0.75rem; color:#aaa;">or type a custom tag:</span>
+                        <input type="text" id="tag-input" placeholder="custom tag..." style="flex:1; min-width:120px; padding:0.3rem 0.5rem; border:1px solid #ccc; border-radius:4px; font-size:0.82rem;" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomTag();}" />
+                        <button class="btn-add-sm" onclick="addCustomTag()">+</button>
+                    </div>
+                    <div class="field-hint">Tags applied to the room while this mutator is active. These do not modify the room's permanent tags. Modules and scripts can check for these tags at runtime.</div>
+                </div>
+
                 <div class="section-title">Exits</div>
 
                 <div class="field span2">
@@ -353,6 +408,7 @@
     'use strict';
 
     let allMutators = [];
+    let allTags = [];
     let currentMutatorId = null;
     let isNew = false;
 
@@ -360,11 +416,16 @@
     // Init
     // -------------------------------------------------------------------------
     async function init() {
-        const res = await AdminAPI.get('/admin/api/v1/mutators');
-        if (!res.ok) { showStatus('Failed to load mutators: ' + res.error, false); return; }
+        const [mutatorsRes, tagsRes] = await AdminAPI.all([
+            AdminAPI.get('/admin/api/v1/mutators'),
+            AdminAPI.get('/admin/api/v1/tags'),
+        ]);
+        if (!mutatorsRes.ok) { showStatus('Failed to load mutators: ' + mutatorsRes.error, false); return; }
 
-        allMutators = (res.data.data || []).sort((a, b) => a.MutatorId.localeCompare(b.MutatorId));
+        allMutators = (mutatorsRes.data.data || []).sort((a, b) => a.MutatorId.localeCompare(b.MutatorId));
+        allTags = (tagsRes.ok && tagsRes.data.data) || [];
         renderList(allMutators);
+        buildTagPickerList('');
         const hashId = decodeURIComponent(location.hash.slice(1));
         if (hashId) loadMutator(hashId);
     }
@@ -452,6 +513,9 @@
         setVal('f-decayrate', m.DecayRate || '');
         setVal('f-respawnrate', m.RespawnRate || '');
         setVal('f-decayintoid', m.DecayIntoId || '');
+
+        // Tags
+        renderTags(m.Tags || []);
 
         // Buffs
         renderBuffChips('playerbuffids-list', m.PlayerBuffIds || []);
@@ -735,6 +799,128 @@
     }
 
     // -------------------------------------------------------------------------
+    // Tags
+    // -------------------------------------------------------------------------
+    function renderTags(tags) {
+        const list = document.getElementById('tags-list');
+        list.innerHTML = '';
+        for (const t of tags) appendTagChip(list, t);
+    }
+
+    function appendTagChip(list, tag) {
+        const chip = document.createElement('span');
+        chip.className = 'tag-chip';
+        chip.dataset.tag = tag;
+        chip.innerHTML = esc(tag) + ' <button onclick="removeTag(this)" title="Remove tag">&times;</button>';
+        list.appendChild(chip);
+    }
+
+    window.removeTag = function (btn) {
+        btn.closest('.tag-chip').remove();
+        updateTagPickerState();
+    };
+
+    function collectTags() {
+        return Array.from(document.querySelectorAll('#tags-list .tag-chip')).map(c => c.dataset.tag);
+    }
+
+    window.addCustomTag = function () {
+        const input = document.getElementById('tag-input');
+        const val = input.value.trim().toLowerCase();
+        if (!val) return;
+        if (collectTags().includes(val)) { input.value = ''; return; }
+        appendTagChip(document.getElementById('tags-list'), val);
+        input.value = '';
+        updateTagPickerState();
+    };
+
+    // -------------------------------------------------------------------------
+    // Tag picker
+    // -------------------------------------------------------------------------
+    function buildTagPickerList(filter) {
+        const container = document.getElementById('tag-picker-list');
+        container.innerHTML = '';
+
+        if (allTags.length === 0) {
+            container.innerHTML = '<div class="tag-picker-empty">No registered tags found.<br>Modules register tags at startup.</div>';
+            return;
+        }
+
+        const current = collectTags();
+        const filterLc = filter.toLowerCase();
+
+        const groups = {};
+        for (const entry of allTags) {
+            if (filterLc && !entry.tag.toLowerCase().includes(filterLc) && !entry.module.toLowerCase().includes(filterLc)) continue;
+            if (!groups[entry.module]) groups[entry.module] = [];
+            groups[entry.module].push(entry.tag);
+        }
+
+        let anyItem = false;
+        for (const mod of Object.keys(groups).sort()) {
+            const grpEl = document.createElement('div');
+            grpEl.className = 'tag-picker-group';
+            grpEl.textContent = mod;
+            container.appendChild(grpEl);
+            for (const tag of groups[mod]) {
+                anyItem = true;
+                const item = document.createElement('div');
+                item.className = 'tag-picker-item' + (current.includes(tag) ? ' selected' : '');
+                item.dataset.tag = tag;
+                item.textContent = tag;
+                item.onclick = () => toggleTagFromPicker(tag, item);
+                container.appendChild(item);
+            }
+        }
+
+        if (!anyItem) {
+            container.innerHTML = '<div class="tag-picker-empty">No matching tags.</div>';
+        }
+    }
+
+    function updateTagPickerState() {
+        const current = collectTags();
+        document.querySelectorAll('#tag-picker-list .tag-picker-item').forEach(item => {
+            item.classList.toggle('selected', current.includes(item.dataset.tag));
+        });
+    }
+
+    function toggleTagFromPicker(tag, itemEl) {
+        const list = document.getElementById('tags-list');
+        const current = collectTags();
+        if (current.includes(tag)) {
+            list.querySelectorAll('.tag-chip').forEach(c => { if (c.dataset.tag === tag) c.remove(); });
+            itemEl.classList.remove('selected');
+        } else {
+            appendTagChip(list, tag);
+            itemEl.classList.add('selected');
+        }
+    }
+
+    window.toggleTagPicker = function (e) {
+        e.stopPropagation();
+        const dd = document.getElementById('tag-picker-dropdown');
+        const isOpen = dd.classList.contains('open');
+        closeTagPicker();
+        if (!isOpen) {
+            buildTagPickerList(document.getElementById('tag-picker-search').value);
+            dd.classList.add('open');
+        }
+    };
+
+    function closeTagPicker() {
+        document.getElementById('tag-picker-dropdown').classList.remove('open');
+    }
+
+    window.filterTagPicker = function () {
+        buildTagPickerList(document.getElementById('tag-picker-search').value);
+    };
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.tag-picker-wrap')) closeTagPicker();
+    });
+
+    // -------------------------------------------------------------------------
     // Color pattern picker
     // -------------------------------------------------------------------------
     window.pickColorPattern = function (targetId) {
@@ -809,6 +995,7 @@
             PlayerBuffIds:       collectBuffIds('playerbuffids-list'),
             MobBuffIds:          collectBuffIds('mobbuffids-list'),
             NativeBuffIds:       collectBuffIds('nativebuffids-list'),
+            Tags:                collectTags(),
             LightMod:            parseInt(document.getElementById('f-lightmod').value, 10) || 0,
             Pvp: {
                 Enabled:  pvpVal === 'enabled',

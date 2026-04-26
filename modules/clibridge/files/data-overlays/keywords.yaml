@@ -1,0 +1,4 @@
+help:
+  admin:
+    all:
+      - cli

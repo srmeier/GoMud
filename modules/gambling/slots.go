@@ -69,13 +69,7 @@ func minJackpot(cost int) int {
 
 // roomHasSlots returns true when the room carries a "slots" or "slot machine" tag.
 func roomHasSlots(r *rooms.Room) bool {
-	for _, t := range r.Tags {
-		tl := strings.ToLower(t)
-		if tl == `slots` || tl == `slot machine` {
-			return true
-		}
-	}
-	return false
+	return r.HasTag(`slots`) || r.HasTag(`slot machine`)
 }
 
 // coloredGlyph wraps a symbol glyph in its designated ANSI color tag.

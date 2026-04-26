@@ -1,0 +1,10 @@
+mutatorid: wildfire-scorched
+namemodifier:
+  behavior: append
+  text: (fire scorched)
+  colorpattern: gray
+descriptionmodifier:
+  behavior: append
+  text: The land is scorched from a recent fire.
+  colorpattern: gray
+decayrate: 3 hours

@@ -225,12 +225,7 @@ func (m *StorageModule) onRoomLook(d rooms.RoomTemplateDetails) rooms.RoomTempla
 
 // roomIsStorage returns true if the room has the storage tag.
 func roomIsStorage(room *rooms.Room) bool {
-	for _, t := range room.Tags {
-		if strings.EqualFold(t, storageTag) {
-			return true
-		}
-	}
-	return false
+	return room.HasTag(storageTag)
 }
 
 // GetStorageItems is exported for use by other systems (e.g. autocomplete).
